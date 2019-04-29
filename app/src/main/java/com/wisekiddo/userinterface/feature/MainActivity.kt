@@ -19,6 +19,7 @@ import com.wisekiddo.presentation.feature.MainDataViewModel
 import com.wisekiddo.presentation.feature.MainIntent
 import com.wisekiddo.presentation.feature.MainMapper
 import com.wisekiddo.presentation.feature.MainUIModel
+import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -28,6 +29,11 @@ class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     BaseView<MainIntent, MainUIModel> {
 
+    private val loadConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.LoadDataIntent>()
+    private val refreshConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
+
     @Inject
     lateinit var mapper: MainMapper
     @Inject
@@ -36,10 +42,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mainDataViewModel: MainDataViewModel
 
     private val compositeDisposable = CompositeDisposable()
-    private val loadConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.LoadDataIntent>()
-    private val refreshConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity(),
 
         navView.setNavigationItemSelectedListener(this)
 
-
+        AndroidInjection.inject(this)
         mainDataViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MainDataViewModel::class.java)
 

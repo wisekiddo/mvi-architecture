@@ -23,18 +23,8 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = arrayOf(
-        ApplicationModule::class,
-        AndroidSupportInjectionModule::class,
-        StoredModule::class,
-        DataModule::class,
-        DomainModule::class,
-        PresentationModule::class,
-        RemoteModule::class,
-        UiModule::class
-    )
+    modules = [ApplicationModule::class, AndroidSupportInjectionModule::class, StoredModule::class, DataModule::class, DomainModule::class, PresentationModule::class, RemoteModule::class, UiModule::class]
 )
-
 interface ApplicationComponent {
 
     @Component.Builder

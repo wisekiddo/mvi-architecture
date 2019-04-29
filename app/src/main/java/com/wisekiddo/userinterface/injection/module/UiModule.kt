@@ -15,6 +15,7 @@ package com.wisekiddo.userinterface.injection.module
 
 import com.wisekiddo.UiThread
 import com.wisekiddo.domain.executor.PostExecutionThread
+import com.wisekiddo.userinterface.feature.MainActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
