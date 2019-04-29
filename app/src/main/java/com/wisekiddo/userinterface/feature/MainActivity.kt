@@ -1,4 +1,4 @@
-package com.wisekiddo
+package com.wisekiddo.userinterface.feature
 
 import android.os.Bundle
 import android.view.Menu
@@ -8,11 +8,38 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.wisekiddo.R
+import com.wisekiddo.presentation.base.BaseView
+import com.wisekiddo.presentation.feature.MainDataViewModel
+import com.wisekiddo.presentation.feature.MainIntent
+import com.wisekiddo.presentation.feature.MainMapper
+import com.wisekiddo.presentation.feature.MainUIModel
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),
+    NavigationView.OnNavigationItemSelectedListener,
+    BaseView<MainIntent, MainUIModel> {
+
+    @Inject
+    lateinit var mapper: MainMapper
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var mainDataViewModel: MainDataViewModel
+
+    private val compositeDisposable = CompositeDisposable()
+    private val loadConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.LoadDataIntent>()
+    private val refreshConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +56,46 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+
+        mainDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(MainDataViewModel::class.java)
+
+        compositeDisposable.add(mainDataViewModel.states().subscribe({ render(it) }))
+        mainDataViewModel.processIntents(intents())
+    }
+
+    override fun onDestroy() {
+        compositeDisposable.dispose()
+        super.onDestroy()
+    }
+
+    override fun intents(): Observable<MainIntent> {
+        return Observable.merge(initialIntent(), loadConversationsIntentPublisher,
+            refreshConversationsIntentPublisher)
+    }
+
+    private fun initialIntent(): Observable<MainIntent.InitialIntent> {
+        return Observable.just(MainIntent.InitialIntent)
+    }
+
+    override fun render(state: MainUIModel) {
+        when {
+            state.inProgress -> {
+            }
+            state is MainUIModel.Failed -> {
+            }
+            state is MainUIModel.Success -> {
+            }
+        }
     }
 
     override fun onBackPressed() {
