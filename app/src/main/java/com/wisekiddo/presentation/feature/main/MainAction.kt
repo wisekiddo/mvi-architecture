@@ -13,7 +13,7 @@
 
 package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.base.BaseAction
+import com.wisekiddo.application.base.BaseAction
 
 sealed class MainAction : BaseAction {
 

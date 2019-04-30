@@ -11,16 +11,14 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.models
 
-import com.wisekiddo.application.base.BaseIntent
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.wisekiddo.stored.db.Constants
 
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+/**
+ * Model used solely for the caching of a data
+ */
+@Entity(tableName = Constants.TABLE_NAME)
+data class StoredModel(@PrimaryKey var id: Long, val name: String, val title: String, val avatar: String)

@@ -11,16 +11,21 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.repository
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.models.RepositoryModel
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
+/**
+ * Interface defining methods for the data operations.
+ * This is to be implemented by external data source layers, setting the requirements for the
+ * operations that need to be implemented
+ */
+interface DataSource {
+    fun clearDataList(): Completable
+    fun saveDatList(repositoryList: List<RepositoryModel>): Completable
+    fun getDataList(): Flowable<List<RepositoryModel>>
+    fun isCached(): Single<Boolean>
 }

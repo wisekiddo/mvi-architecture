@@ -11,22 +11,24 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.remote
+package com.wisekiddo.application.module
 
-import com.wisekiddo.models.RemoteModel
-import io.reactivex.Flowable
-import retrofit2.http.GET
+import com.wisekiddo.application.executor.UIThread
+import com.wisekiddo.application.executor.PostExecutionThread
+import com.wisekiddo.presentation.feature.main.MainActivity
+import dagger.Binds
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 /**
- * Defines the abstract methods used for interacting with the DomainModel API
+ * Module that provides all dependencies from the mobile-ui package/layer and injects all activities.
  */
-interface Service {
+@Module
+abstract class UIModule {
 
-    @GET("?gender=female")
-    fun getData(): Flowable<DataResponse>
+    @Binds
+    abstract fun bindPostExecutionThread(UIThread: UIThread): PostExecutionThread
 
-    class DataResponse {
-        lateinit var result: List<RemoteModel>
-    }
-
+    @ContributesAndroidInjector
+    abstract fun contributeMainActivity(): MainActivity
 }

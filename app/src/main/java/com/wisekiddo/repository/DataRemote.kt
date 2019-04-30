@@ -11,16 +11,20 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.repository
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.models.RepositoryModel
+import io.reactivex.Flowable
 
-sealed class MainIntent : BaseIntent {
+/**
+ * Interface defining methods for the caching of data. This is to be implemented by the
+ * cache layer, using this interface as a way of communicating.
+ */
+interface DataRemote {
 
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
+    /**
+     * Retrieve a list of data, from the cache
+     */
+    fun getDataList(): Flowable<List<RepositoryModel>>
 
 }

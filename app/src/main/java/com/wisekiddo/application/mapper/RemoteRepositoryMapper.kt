@@ -11,22 +11,24 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.remote
+package com.wisekiddo.application.mapper
 
+import com.wisekiddo.models.RepositoryModel
 import com.wisekiddo.models.RemoteModel
-import io.reactivex.Flowable
-import retrofit2.http.GET
+import javax.inject.Inject
 
 /**
- * Defines the abstract methods used for interacting with the DomainModel API
+ * Map a [RemoteModel] to and from a [RepositoryModel] instance when data is moving between
+ * this later and the DomainModel layer
  */
-interface Service {
+open class RemoteRepositoryMapper @Inject constructor() :
+    RemoteMapper<RemoteModel, RepositoryModel> {
 
-    @GET("?gender=female")
-    fun getData(): Flowable<DataResponse>
-
-    class DataResponse {
-        lateinit var result: List<RemoteModel>
+    /**
+     * Map an instance of a [RemoteModel] to a [RepositoryModel] model
+     */
+    override fun mapFromRemote(type: RemoteModel): RepositoryModel {
+        return RepositoryModel(type.id, type.name, type.title, type.avatar)
     }
 
 }

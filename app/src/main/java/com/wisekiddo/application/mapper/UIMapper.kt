@@ -11,16 +11,18 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.mapper
 
-import com.wisekiddo.application.base.BaseIntent
+/**
+ * Interface for model mappers. It provides helper methods that facilitate
+ * retrieving of models from outer layers
+ *
+ * @param <V> the view input type
+ * @param <D> the view model output type
+ */
+interface UIMapper<out V, in D> {
 
-sealed class MainIntent : BaseIntent {
+    fun mapToViewModel(type: D): V
 
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
 
 }

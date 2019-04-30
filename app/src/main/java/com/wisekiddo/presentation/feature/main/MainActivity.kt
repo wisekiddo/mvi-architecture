@@ -14,7 +14,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.wisekiddo.R
-import com.wisekiddo.base.BaseView
+import com.wisekiddo.application.base.BaseView
+import com.wisekiddo.application.mapper.PresentationStreamMapper
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity(),
         BehaviorSubject.create<MainIntent.RefreshDataIntent>()
 
     @Inject
-    lateinit var mapper: MainMapper
+    lateinit var mapper: PresentationStreamMapper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 

@@ -1,12 +1,12 @@
 package com.wisekiddo.stored
 
-import com.wisekiddo.data.model.DataModel
-import com.wisekiddo.data.repository.DataStored
+import com.wisekiddo.models.RepositoryModel
+import com.wisekiddo.repository.DataStored
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import com.wisekiddo.stored.db.ProjectDatabase
-import com.wisekiddo.stored.mapper.StoredEntityMapper
+import com.wisekiddo.application.mapper.StoredEntityMapper
 import javax.inject.Inject
 
 /**
@@ -39,11 +39,11 @@ class StoredImpl @Inject constructor(val projectDatabase: ProjectDatabase,
     }
 
     /**
-     * Save the given list of [DataModel] instances to the projectDatabase.
+     * Save the given list of [RepositoryModel] instances to the projectDatabase.
      */
-    override fun saveDataList(dataList: List<DataModel>): Completable {
+    override fun saveDataList(repositoryList: List<RepositoryModel>): Completable {
         return Completable.defer {
-            dataList.forEach {
+            repositoryList.forEach {
                 projectDatabase.cachedDao().insertData(
                     storedEntityMapper.mapToCached(it))
             }
@@ -52,9 +52,9 @@ class StoredImpl @Inject constructor(val projectDatabase: ProjectDatabase,
     }
 
     /**
-     * Retrieve a list of [DataModel] instances from the projectDatabase.
+     * Retrieve a list of [RepositoryModel] instances from the projectDatabase.
      */
-    override fun getDataList(): Flowable<List<DataModel>> {
+    override fun getDataList(): Flowable<List<RepositoryModel>> {
         return Flowable.defer {
             Flowable.just(projectDatabase.cachedDao().getData())
         }.map {

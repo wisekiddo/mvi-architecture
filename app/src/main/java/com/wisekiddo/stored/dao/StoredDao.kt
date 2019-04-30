@@ -18,7 +18,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.wisekiddo.stored.db.Constants
-import com.wisekiddo.stored.model.StoredModel
+import com.wisekiddo.models.StoredModel
 
 @Dao
 abstract class StoredDao {

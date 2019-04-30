@@ -11,16 +11,24 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.mapper
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.models.MainViewModel
+import com.wisekiddo.models.DataViewModel
 
-sealed class MainIntent : BaseIntent {
+import javax.inject.Inject
 
-    object InitialIntent : MainIntent()
+/**
+ * Map a [MainViewModel] to and from a [DataViewModel] instance when data is moving between
+ * view layer and the Domain layer
+ */
+open class UIViewModelMapper @Inject constructor(): UIMapper<DataViewModel, MainViewModel> {
 
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
+    /**
+     * Map a [MainViewModel] instance to a [DataViewModel] instance
+     */
+    override fun mapToViewModel(type: MainViewModel): DataViewModel {
+        return DataViewModel(type.name, type.title, type.avatar)
+    }
 
 }

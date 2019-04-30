@@ -13,7 +13,7 @@
 
 package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.domain.interactor.GetDataList
+import com.wisekiddo.streams.GetDataList
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import javax.inject.Inject
@@ -25,15 +25,15 @@ class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
                 it.switchMap {
                     getDataList.execute()
                             .map {
-                                MainResult.LoadBufferoosTask.success(
+                                MainResult.LoadDataTask.success(
                                     it
                                 )
                             }
                             .onErrorReturn {
-                                MainResult.LoadBufferoosTask.failure()
+                                MainResult.LoadDataTask.failure()
                             }
                             .toObservable()
-                            .startWith(MainResult.LoadBufferoosTask.inFlight())
+                            .startWith(MainResult.LoadDataTask.inFlight())
                 }
             }
 

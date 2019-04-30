@@ -11,16 +11,23 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.module
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.repository.DataRepository
+import com.wisekiddo.application.executor.JobExecutor
+import com.wisekiddo.application.executor.ThreadExecutor
+import com.wisekiddo.repository.Repository
+import dagger.Binds
+import dagger.Module
 
-sealed class MainIntent : BaseIntent {
 
-    object InitialIntent : MainIntent()
+@Module
+abstract class DataModule {
 
-    object LoadDataIntent : MainIntent()
+    @Binds
+    abstract fun bindDataRepository(dataRepository: DataRepository):
+            Repository
 
-    object RefreshDataIntent : MainIntent()
-
+    @Binds
+    abstract fun bindThreadExecutor(jobExecutor: JobExecutor): ThreadExecutor
 }

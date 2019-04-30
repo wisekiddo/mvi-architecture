@@ -11,16 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application
 
-import com.wisekiddo.application.base.BaseIntent
-
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+/**
+ * Marks an activity / fragment injectable.
+ */
+interface Injectable

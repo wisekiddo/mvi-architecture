@@ -14,9 +14,10 @@
 package com.wisekiddo.presentation.feature.main
 
 import androidx.lifecycle.ViewModel
-import com.wisekiddo.base.BaseIntent
-import com.wisekiddo.base.BaseViewModel
+import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.application.base.BaseViewModel
 import com.wisekiddo.enums.TaskStatus
+import com.wisekiddo.application.mapper.PresentationStreamMapper
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction
@@ -25,7 +26,7 @@ import javax.inject.Inject
 
 open class MainDataViewModel @Inject internal constructor(
     private val mainProcessor: MainProcessor,
-    private val mainMapper: MainMapper
+    private val presentationStreamMapper: PresentationStreamMapper
 )
     : ViewModel(), BaseViewModel<MainIntent, MainUIModel> {
 
@@ -40,10 +41,10 @@ open class MainDataViewModel @Inject internal constructor(
     private val reducer: BiFunction<MainUIModel, MainResult, MainUIModel> =
             BiFunction<MainUIModel, MainResult, MainUIModel> { _, result ->
                 when (result) {
-                    is MainResult.LoadBufferoosTask -> {
+                    is MainResult.LoadDataTask -> {
                         when {
                             result.status == TaskStatus.SUCCESS -> MainUIModel.Success(
-                                result.dataList?.map { mainMapper.mapToView(it) })
+                                result.dataList?.map { presentationStreamMapper.mapToView(it) })
                             result.status == TaskStatus.FAILURE -> MainUIModel.Failed
                             result.status == TaskStatus.IN_FLIGHT -> MainUIModel.InProgress
                             else -> MainUIModel.Idle()

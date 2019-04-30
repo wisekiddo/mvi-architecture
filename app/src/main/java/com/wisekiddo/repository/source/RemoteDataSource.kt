@@ -11,35 +11,40 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.remote
+package com.wisekiddo.repository.source
 
 import com.wisekiddo.models.RepositoryModel
 import com.wisekiddo.repository.DataRemote
+import com.wisekiddo.repository.DataSource
+import io.reactivex.Completable
 import io.reactivex.Flowable
-import com.wisekiddo.application.mapper.RemoteRepositoryMapper
+import io.reactivex.Single
 import javax.inject.Inject
 
 /**
- * Remote implementation for retrieving Data instances. This class implements the
- * [DataRemote] from the DomainModel layer as it is that layers responsibility for defining the
- * operations in which data store implementation layers can carry out.
+ * Implementation of the [RemoteDataSource] interface to provide a means of communicating
+ * with the remote data source
  */
-class RemoteImpl @Inject constructor(
-    private val service: Service,
-    private val remoteRepositoryMapper: RemoteRepositoryMapper
-) : DataRemote {
+open class RemoteDataSource @Inject constructor(private val dataRemote: DataRemote) :
+    DataSource {
+
+    override fun clearDataList(): Completable {
+        throw UnsupportedOperationException()
+    }
+
+    override fun saveDatList(repositoryList: List<RepositoryModel>): Completable {
+        throw UnsupportedOperationException()
+    }
 
     /**
-     * Retrieve a list of [RemoteRepositoryMapper] instances from the [Service].
+     * Retrieve a list of [RepositoryModel] instances from the API
      */
     override fun getDataList(): Flowable<List<RepositoryModel>> {
-        return service.getData()
-            .map { it.result }
-            .map { itemList ->
-                val entities = mutableListOf<RepositoryModel>()
-                itemList.forEach { entities.add(remoteRepositoryMapper.mapFromRemote(it)) }
-                entities
-            }
+        return dataRemote.getDataList()
+    }
+
+    override fun isCached(): Single<Boolean> {
+        throw UnsupportedOperationException()
     }
 
 }

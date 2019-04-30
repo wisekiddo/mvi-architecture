@@ -19,8 +19,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.wisekiddo.stored.dao.StoredDao
-import com.wisekiddo.stored.model.StoredModel
-import javax.inject.Inject
+import com.wisekiddo.models.StoredModel
 
 @Database(entities = arrayOf(StoredModel::class), version = 1)
 abstract class ProjectDatabase : RoomDatabase() {

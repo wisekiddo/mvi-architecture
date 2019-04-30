@@ -11,16 +11,20 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.executor
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.application.executor.PostExecutionThread
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-sealed class MainIntent : BaseIntent {
+/**
+ * MainThread (UI Thread) implementation based on a [Scheduler]
+ * which will execute actions on the Android UI thread
+ */
+class UIThread @Inject internal constructor() : PostExecutionThread {
 
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
+    override val scheduler: Scheduler
+        get() = AndroidSchedulers.mainThread()
 
 }

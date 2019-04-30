@@ -11,16 +11,12 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.base
 
-import com.wisekiddo.application.base.BaseIntent
+import io.reactivex.Observable
 
-sealed class MainIntent : BaseIntent {
+interface BaseView<I : BaseIntent, in S : BaseViewState> {
+    fun intents(): Observable<I>
 
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
+    fun render(state: S)
 }

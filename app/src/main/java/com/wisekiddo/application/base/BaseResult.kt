@@ -11,16 +11,6 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.base
 
-import com.wisekiddo.application.base.BaseIntent
-
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+interface BaseResult

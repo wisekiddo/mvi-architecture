@@ -13,18 +13,19 @@
 
 package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.base.BaseViewState
+import com.wisekiddo.application.base.BaseViewState
+import com.wisekiddo.models.MainViewModel
 
 
 sealed class MainUIModel(val inProgress: Boolean = false,
-                           val bufferoos: List<MainView>? = null)
+                           val dataList: List<MainViewModel>? = null)
     : BaseViewState {
 
     object InProgress : MainUIModel(true, null)
 
     object Failed : MainUIModel()
 
-    data class Success(private val result: List<MainView>?) : MainUIModel(false, result)
+    data class Success(private val result: List<MainViewModel>?) : MainUIModel(false, result)
 
     class Idle : MainUIModel(false, null)
 

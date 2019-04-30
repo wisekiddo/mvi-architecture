@@ -11,16 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.models
 
-import com.wisekiddo.application.base.BaseIntent
-
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+/**
+ * Representation for a [MainViewModel] instance for this layers Model representation
+ */
+class MainViewModel(val name: String, val title: String, val avatar: String)

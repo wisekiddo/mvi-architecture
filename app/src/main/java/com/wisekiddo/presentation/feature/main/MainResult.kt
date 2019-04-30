@@ -13,32 +13,32 @@
 
 package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.domain.model.DomainModel
-import com.wisekiddo.base.BaseResult
+import com.wisekiddo.models.DomainModel
+import com.wisekiddo.application.base.BaseResult
 import com.wisekiddo.enums.TaskStatus
 
 
 sealed class MainResult : BaseResult {
 
-    class LoadBufferoosTask(val status: TaskStatus,
-                            val dataList: List<DomainModel>? = null) :
+    class LoadDataTask(val status: TaskStatus,
+                       val dataList: List<DomainModel>? = null) :
             MainResult() {
 
         companion object {
 
-            internal fun success(conversations: List<DomainModel>?): LoadBufferoosTask {
-                return LoadBufferoosTask(
+            internal fun success(conversations: List<DomainModel>?): LoadDataTask {
+                return LoadDataTask(
                     TaskStatus.SUCCESS,
                     conversations
                 )
             }
 
-            internal fun failure(): LoadBufferoosTask {
-                return LoadBufferoosTask(TaskStatus.FAILURE, null)
+            internal fun failure(): LoadDataTask {
+                return LoadDataTask(TaskStatus.FAILURE, null)
             }
 
-            internal fun inFlight(): LoadBufferoosTask {
-                return LoadBufferoosTask(TaskStatus.IN_FLIGHT)
+            internal fun inFlight(): LoadDataTask {
+                return LoadDataTask(TaskStatus.IN_FLIGHT)
             }
         }
     }

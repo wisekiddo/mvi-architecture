@@ -11,16 +11,17 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.mapper
 
-import com.wisekiddo.application.base.BaseIntent
+/**
+ * Interface for model mappers. It provides helper methods that facilitate
+ * retrieving of models from outer layers
+ *
+ * @param <V> the view model input type
+ * @param <D> the stream model output type
+ */
+interface PresentationMapper<out V, in D> {
 
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
+    fun mapToView(type: D): V
 
 }

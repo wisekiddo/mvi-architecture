@@ -11,16 +11,11 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.executor
 
-import com.wisekiddo.application.base.BaseIntent
+import java.util.concurrent.Executor
 
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+/**
+ * Executor implementation can be based on different frameworks or techniques of asynchronous execution
+ */
+interface ThreadExecutor : Executor

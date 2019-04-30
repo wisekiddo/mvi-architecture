@@ -11,16 +11,19 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.repository
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.models.DomainModel
+import io.reactivex.Completable
+import io.reactivex.Flowable
 
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
+/**
+ * Interface defining methods for how the data layer can pass data to and from the Domain layer.
+ * This is to be implemented by the data layer, setting the requirements for the
+ * operations that need to be implemented
+ */
+interface Repository {
+    fun clearDataList(): Completable
+    fun saveDataList(dataList: List<DomainModel>): Completable
+    fun getDataList(): Flowable<List<DomainModel>>
 }

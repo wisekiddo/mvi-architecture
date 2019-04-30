@@ -11,16 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.models
 
-import com.wisekiddo.application.base.BaseIntent
-
-sealed class MainIntent : BaseIntent {
-
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
-}
+/**
+ * Representation for a [RemoteModel] fetched from the API
+ */
+class RemoteModel(val id: Long, val name: String, val title: String, val avatar: String)

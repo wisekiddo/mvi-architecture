@@ -11,16 +11,19 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.application.module
 
-import com.wisekiddo.application.base.BaseIntent
+import android.app.Application
+import android.content.Context
+import dagger.Binds
+import dagger.Module
 
-sealed class MainIntent : BaseIntent {
+/**
+ * Module used to provide dependencies at an application-level.
+ */
+@Module
+abstract class ApplicationModule {
 
-    object InitialIntent : MainIntent()
-
-    object LoadDataIntent : MainIntent()
-
-    object RefreshDataIntent : MainIntent()
-
+    @Binds
+    abstract fun bindContext(application: Application): Context
 }
