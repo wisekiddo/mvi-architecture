@@ -1,4 +1,4 @@
-package com.wisekiddo.userinterface.feature
+package com.wisekiddo.feature
 
 import android.os.Bundle
 import android.view.Menu

@@ -16,7 +16,7 @@ package com.wisekiddo.presentation.feature
 import androidx.lifecycle.ViewModel
 import com.wisekiddo.presentation.base.BaseIntent
 import com.wisekiddo.presentation.base.BaseViewModel
-import com.wisekiddo.presentation.enums.TaskStatus
+import com.wisekiddo.enums.TaskStatus
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction

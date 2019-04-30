@@ -20,6 +20,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 open class ViewModelFactory @Inject constructor(
     private val creators: Map<Class<out ViewModel>,
@@ -39,8 +40,8 @@ open class ViewModelFactory @Inject constructor(
         if (creator == null) {
             throw IllegalArgumentException("unknown model class " + modelClass) as Throwable
         }
-        try {
-            return creator.get() as T
+        return try {
+            creator.get() as T
         } catch (e: Exception) {
             throw RuntimeException(e)
         }

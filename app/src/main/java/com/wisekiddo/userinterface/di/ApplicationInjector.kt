@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection
+package com.wisekiddo.userinterface.di
 
 import android.app.Activity
 import android.app.Application
@@ -24,7 +24,7 @@ import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 
-import com.wisekiddo.KiddoApplication
+import com.wisekiddo.ProjectApplication
 
 /**
  * Helper class to automatically inject fragments if they implement {@link Injectable}.
@@ -33,16 +33,16 @@ class AppInjector {
 
     companion object {
 
-        fun init(kiddoApp: KiddoApplication) {
+        fun init(projectApp: ProjectApplication) {
 
             DaggerApplicationComponent
                 .builder()
-                .application(kiddoApp)
+                .application(projectApp)
                 .build()
-                .inject(kiddoApp)
+                .inject(projectApp)
 
 
-            kiddoApp.registerActivityLifecycleCallbacks(object :
+            projectApp.registerActivityLifecycleCallbacks(object :
                 Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(
                     activity: Activity,

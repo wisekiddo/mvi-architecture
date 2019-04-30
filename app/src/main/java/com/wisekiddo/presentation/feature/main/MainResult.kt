@@ -15,7 +15,7 @@ package com.wisekiddo.presentation.feature
 
 import com.wisekiddo.domain.model.DomainModel
 import com.wisekiddo.presentation.base.BaseResult
-import com.wisekiddo.presentation.enums.TaskStatus
+import com.wisekiddo.enums.TaskStatus
 
 
 sealed class MainResult : BaseResult {
