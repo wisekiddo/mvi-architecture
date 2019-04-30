@@ -11,11 +11,11 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection
+package com.wisekiddo.userinterface.di
 
 import android.app.Application
-import com.wisekiddo.KiddoApplication
-import com.wisekiddo.userinterface.injection.module.*
+import com.wisekiddo.ProjectApplication
+import com.wisekiddo.userinterface.di.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-    modules = [ApplicationModule::class, AndroidSupportInjectionModule::class, StoredModule::class, DataModule::class, DomainModule::class, PresentationModule::class, RemoteModule::class, UiModule::class]
+    modules = [ApplicationModule::class, AndroidSupportInjectionModule::class, StoredModule::class, DataModule::class, DomainModule::class, PresentationModule::class, RemoteModule::class, UIModule::class]
 )
 interface ApplicationComponent {
 
@@ -35,6 +35,6 @@ interface ApplicationComponent {
         fun build(): ApplicationComponent
     }
 
-    fun inject(app: KiddoApplication)
+    fun inject(app: ProjectApplication)
 
 }

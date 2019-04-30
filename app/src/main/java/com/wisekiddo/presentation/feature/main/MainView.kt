@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
 /**
  * Representation for a [MainView] instance for this layers Model representation

@@ -11,9 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.presentation.base.BaseIntent
+import com.wisekiddo.base.BaseIntent
 
 sealed class MainIntent : BaseIntent {
 

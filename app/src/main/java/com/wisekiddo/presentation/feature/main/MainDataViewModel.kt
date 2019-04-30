@@ -11,11 +11,11 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
 import androidx.lifecycle.ViewModel
-import com.wisekiddo.presentation.base.BaseIntent
-import com.wisekiddo.presentation.base.BaseViewModel
+import com.wisekiddo.base.BaseIntent
+import com.wisekiddo.base.BaseViewModel
 import com.wisekiddo.enums.TaskStatus
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
@@ -24,8 +24,8 @@ import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 open class MainDataViewModel @Inject internal constructor(
-        private val mainProcessor: MainProcessor,
-        private val mainMapper: MainMapper
+    private val mainProcessor: MainProcessor,
+    private val mainMapper: MainMapper
 )
     : ViewModel(), BaseViewModel<MainIntent, MainUIModel> {
 
@@ -43,7 +43,7 @@ open class MainDataViewModel @Inject internal constructor(
                     is MainResult.LoadBufferoosTask -> {
                         when {
                             result.status == TaskStatus.SUCCESS -> MainUIModel.Success(
-                                    result.dataList?.map { mainMapper.mapToView(it) })
+                                result.dataList?.map { mainMapper.mapToView(it) })
                             result.status == TaskStatus.FAILURE -> MainUIModel.Failed
                             result.status == TaskStatus.IN_FLIGHT -> MainUIModel.InProgress
                             else -> MainUIModel.Idle()

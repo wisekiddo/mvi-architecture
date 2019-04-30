@@ -1,4 +1,4 @@
-package com.wisekiddo.feature
+package com.wisekiddo.presentation.feature.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -14,11 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.wisekiddo.R
-import com.wisekiddo.presentation.base.BaseView
-import com.wisekiddo.presentation.feature.MainDataViewModel
-import com.wisekiddo.presentation.feature.MainIntent
-import com.wisekiddo.presentation.feature.MainMapper
-import com.wisekiddo.presentation.feature.MainUIModel
+import com.wisekiddo.base.BaseView
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

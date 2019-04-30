@@ -11,6 +11,6 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.base
+package com.wisekiddo.base
 
 interface BaseAction

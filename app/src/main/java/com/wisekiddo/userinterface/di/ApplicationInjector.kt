@@ -29,7 +29,7 @@ import com.wisekiddo.ProjectApplication
 /**
  * Helper class to automatically inject fragments if they implement {@link Injectable}.
  */
-class AppInjector {
+class ApplicationInjector {
 
     companion object {
 

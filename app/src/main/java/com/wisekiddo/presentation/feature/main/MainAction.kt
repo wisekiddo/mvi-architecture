@@ -11,9 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
-import com.wisekiddo.presentation.base.BaseAction
+import com.wisekiddo.base.BaseAction
 
 sealed class MainAction : BaseAction {
 

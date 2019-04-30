@@ -11,12 +11,12 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection.module
+package com.wisekiddo.userinterface.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.wisekiddo.presentation.feature.MainDataViewModel
-import com.wisekiddo.userinterface.injection.ViewModelFactory
+import com.wisekiddo.presentation.feature.main.MainDataViewModel
+import com.wisekiddo.userinterface.di.ViewModelFactory
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.enums
+package com.wisekiddo.enums
 
 enum class TaskStatus {
     SUCCESS, FAILURE, IN_FLIGHT

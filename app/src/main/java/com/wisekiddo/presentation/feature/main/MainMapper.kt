@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
 import com.wisekiddo.domain.model.DomainModel
 import com.wisekiddo.presentation.mapper.Mapper

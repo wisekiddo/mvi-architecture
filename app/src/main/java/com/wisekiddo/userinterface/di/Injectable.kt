@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection
+package com.wisekiddo.userinterface.di
 
 /**
  * Marks an activity / fragment injectable.

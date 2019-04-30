@@ -13,7 +13,7 @@
 
 package com.wisekiddo.userinterface.mapper
 
-import com.wisekiddo.presentation.feature.MainView
+import com.wisekiddo.presentation.feature.main.MainView
 import com.wisekiddo.userinterface.model.DataViewModel
 
 import javax.inject.Inject

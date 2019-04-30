@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection.module
+package com.wisekiddo.userinterface.di.module
 
 import com.wisekiddo.data.DataRepository
 import com.wisekiddo.data.executor.JobExecutor

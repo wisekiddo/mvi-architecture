@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature
+package com.wisekiddo.presentation.feature.main
 
 import com.wisekiddo.domain.interactor.GetDataList
 import io.reactivex.Observable
@@ -25,7 +25,9 @@ class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
                 it.switchMap {
                     getDataList.execute()
                             .map {
-                                MainResult.LoadBufferoosTask.success(it)
+                                MainResult.LoadBufferoosTask.success(
+                                    it
+                                )
                             }
                             .onErrorReturn {
                                 MainResult.LoadBufferoosTask.failure()

@@ -11,11 +11,11 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.userinterface.injection.module
+package com.wisekiddo.userinterface.di.module
 
 import com.wisekiddo.UiThread
 import com.wisekiddo.domain.executor.PostExecutionThread
-import com.wisekiddo.feature.MainActivity
+import com.wisekiddo.presentation.feature.main.MainActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -24,7 +24,7 @@ import dagger.android.ContributesAndroidInjector
  * Module that provides all dependencies from the mobile-ui package/layer and injects all activities.
  */
 @Module
-abstract class UiModule {
+abstract class UIModule {
 
     @Binds
     abstract fun bindPostExecutionThread(uiThread: UiThread): PostExecutionThread
