@@ -38,7 +38,7 @@ open class ViewModelFactory @Inject constructor(
             }
         }
         if (creator == null) {
-            throw IllegalArgumentException("unknown model class " + modelClass) as Throwable
+            throw IllegalArgumentException("unknown model class " + modelClass)
         }
         return try {
             creator.get() as T

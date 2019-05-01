@@ -49,20 +49,20 @@ class ApplicationInjector {
                     handleActivity(activity)
                 }
 
-                override fun onActivityStarted(activity: Activity) {}
+                override fun onActivityStarted(activity: Activity) {/* for injection*/}
 
-                override fun onActivityResumed(activity: Activity) {}
+                override fun onActivityResumed(activity: Activity) {/* for injection*/}
 
-                override fun onActivityPaused(activity: Activity) {}
+                override fun onActivityPaused(activity: Activity) {/* for injection*/}
 
-                override fun onActivityStopped(activity: Activity) {}
+                override fun onActivityStopped(activity: Activity) {/* for injection*/}
 
                 override fun onActivitySaveInstanceState(
                     activity: Activity,
                     outState: Bundle?
-                ) {}
+                ) {/* for injection*/}
 
-                override fun onActivityDestroyed(activity: Activity) {}
+                override fun onActivityDestroyed(activity: Activity) {/* for injection*/}
             })
         }
 

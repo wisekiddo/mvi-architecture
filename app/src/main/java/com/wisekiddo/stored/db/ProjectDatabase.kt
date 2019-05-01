@@ -20,9 +20,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.wisekiddo.stored.dao.StoredDao
 import com.wisekiddo.models.StoredModel
+import javax.inject.Inject
 
-@Database(entities = arrayOf(StoredModel::class), version = 1)
-abstract class ProjectDatabase : RoomDatabase() {
+@Database(entities = [StoredModel::class], version = 1,  exportSchema = false)
+abstract class ProjectDatabase  : RoomDatabase() {
 
     abstract fun cachedDao(): StoredDao
 
