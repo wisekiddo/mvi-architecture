@@ -9,6 +9,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -31,12 +33,17 @@ android {
         unitTests.includeAndroidResources = true
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
+    // Keep the following configuration in order to target Java 8.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
 
     def kotlin_version = "$base_kotlin_version"
-    def room_version = '1.1.1'
+    def room_version = '2.0.0'
     def glide_version = '4.8.0'
     def dagger_version = '2.16'
     def retrofit_version = '2.3.0'
@@ -44,7 +51,6 @@ dependencies {
     def mockito_version = '2.8.47'
     def okhttp_version = '3.10.0'
     def rxjava_adapter = '1.0.0'
-    def anko_version = '0.10.4'
     def material_version = '1.0.0-rc02'
     def legacy_version = '1.0.0'
     def constraint_version = '2.0.0-alpha2'
@@ -54,6 +60,7 @@ dependencies {
     def junit_version = '4.12'
     def lifecycle_version = '2.0.0-alpha1'
     def moshi_version = '1.8.0'
+
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -70,12 +77,13 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$test_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
+    implementation "androidx.core:core-ktx:+"
 
-    //Material
+    //Material Libs
     implementation "com.google.android.material:material:$material_version"
     implementation "androidx.legacy:legacy-support-v4:$legacy_version"
 
-    //Dagger
+    //Dagger Libs
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
@@ -83,7 +91,7 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     //APP Lifecycle
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: '2.0.0-alpha1'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: "$lifecycle_version"
 
     //Retrofit , RxJava Dependencies
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -94,21 +102,23 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
     implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rxjava_adapter"
 
-    //Glide
+    //Glide Libs
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
-    //Room
-    implementation 'androidx.room:room-runtime:2.0.0'
-    kapt 'androidx.room:room-compiler:2.0.0'
+    //Room Libs
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
-    //Anko
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
     //Moshi
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+
+    implementation project(':widgets')
+
 }

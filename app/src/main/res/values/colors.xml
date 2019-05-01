@@ -18,7 +18,7 @@
     <color name="light_theme_status_bar">@color/grey_300</color>
     <color name="light_theme_app_bar">@color/grey_100</color>
     <color name="light_theme_background">@color/grey_50</color>
-    <color name="light_theme_cards_dialogs">@color/white</color>
+    <color name="light_theme_cards_dialogs">@color/white_text</color>
 
     <color name="light_theme_base">@color/black</color>
     <color name="light_theme_text">@color/black_text</color>
@@ -33,7 +33,7 @@
     <color name="dark_theme_background">#303030</color>
     <color name="dark_theme_cards_dialogs">@color/grey_800</color>
 
-    <color name="dark_theme_base">@color/white</color>
+    <color name="dark_theme_base">@color/white_text</color>
     <color name="dark_theme_text">@color/white_text</color>
     <color name="dark_theme_text_secondary">@color/white_text_secondary</color>
     <color name="dark_theme_text_disabled">@color/white_text_disabled</color>
@@ -324,9 +324,51 @@
     <color name="black_text_secondary">#8a000000</color>
     <color name="black_text">#de000000</color>
 
-    <color name="white">#ffffff</color>
     <color name="white_dividers">#1fffffff</color>
     <color name="white_text_disabled">#4dffffff</color>
     <color name="white_text_secondary">#b3ffffff</color>
     <color name="white_text">#ffffff</color>
+
+
+
+    <color name="red">#ff0000</color>
+    <color name="red_default">#77ff0000</color>
+    <color name="green">#00e500</color>
+    <color name="green_default">#7700e500</color>
+    <color name="yellow">#ffff00</color>
+    <color name="amber">#FFC200</color>
+    <color name="amber_default">#77FFC200</color>
+
+    <color name="blue">#0000ff</color>
+    <color name="blue_selected">#2196F3</color>
+    <color name="blue_delfault">#BBDEFB</color>
+
+    <color name="grey_default">#55A9A9A9</color>
+
+    <color name="darkmagenta">#8B008B</color>
+
+    <array name="colors_red">
+        <item>@color/red</item>
+    </array>
+
+    <array name="colors_amber">
+        <item>@color/amber</item>
+    </array>
+
+    <array name="colors_green">
+        <item>@color/green</item>
+    </array>
+
+    <array name="colors_rgb">
+        <item>@color/red</item>
+        <item>@color/amber</item>
+        <item>@color/green</item>
+        <item>@android:color/darker_gray</item>
+    </array>
+
+    <array name="colors_blue">
+        <item>@color/blue_selected</item>
+        <item>@color/blue_delfault</item>
+    </array>
+
 </resources>

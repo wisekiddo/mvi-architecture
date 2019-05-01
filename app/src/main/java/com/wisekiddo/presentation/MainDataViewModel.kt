@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.presentation
 
 import androidx.lifecycle.ViewModel
 import com.wisekiddo.application.base.BaseIntent

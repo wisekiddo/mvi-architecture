@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.streams
+package com.wisekiddo.domain
 
 import com.wisekiddo.application.executor.PostExecutionThread
 import com.wisekiddo.application.executor.ThreadExecutor
@@ -30,7 +30,7 @@ open class GetDataList @Inject constructor(val repository: Repository,
         FlowableUseCase<List<DomainModel>, Void?>(threadExecutor, postExecutionThread) {
 
     public override fun buildUseCaseObservable(params: Void?): Flowable<List<DomainModel>> {
-        return repository.getDataList()
+        return repository.getDataList( params.)
     }
 
 }

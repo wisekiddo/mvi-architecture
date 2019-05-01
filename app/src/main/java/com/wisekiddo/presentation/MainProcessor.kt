@@ -11,9 +11,9 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.presentation
 
-import com.wisekiddo.streams.GetDataList
+import com.wisekiddo.domain.GetDataList
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import javax.inject.Inject

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.streams
+package com.wisekiddo.domain
 
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable

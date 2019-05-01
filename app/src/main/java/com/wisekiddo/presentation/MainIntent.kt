@@ -11,19 +11,16 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.streams
+package com.wisekiddo.presentation
 
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
+import com.wisekiddo.application.base.BaseIntent
 
+sealed class MainIntent : BaseIntent {
 
-/**
- * Default [SingleObserver] base class to define
- */
-open class BaseSingleObserver<T> : SingleObserver<T> {
+    object InitialIntent : MainIntent()
 
-    override fun onSubscribe(d: Disposable) { }
-    override fun onSuccess(t: T) { }
-    override fun onError(exception: Throwable) { }
+    object LoadDataIntent : MainIntent()
+
+    object RefreshDataIntent : MainIntent()
 
 }

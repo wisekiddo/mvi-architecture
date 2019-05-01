@@ -16,17 +16,26 @@ package com.wisekiddo.remote
 import com.wisekiddo.models.RemoteModel
 import io.reactivex.Flowable
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 /**
  * Defines the abstract methods used for interacting with the DomainModel API
  */
 interface Service {
 
-    @GET("?gender=female")
-    fun getData(): Flowable<DataResponse>
+    @GET("/api/")
+    fun getData(@Query("gender") gender:String): Flowable<DataResponse>
 
     class DataResponse {
         lateinit var result: List<RemoteModel>
     }
 
+    //@GET("?gender=$gender")
+    //fun getDataByGender( gender:String,  id:String): Flowable<DataResponse>
+
+    //@Query("q") query: String,
+    //@Query("sort") sort: String,
+    //@Query("order") order: String
+    //user: https://randomuser.me/api/?seed=0002
+    //multiple user: https://randomuser.me/api/?results=10
 }

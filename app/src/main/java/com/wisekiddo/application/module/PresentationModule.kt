@@ -15,7 +15,7 @@ package com.wisekiddo.application.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.wisekiddo.presentation.feature.main.MainDataViewModel
+import com.wisekiddo.presentation.MainDataViewModel
 import com.wisekiddo.application.ViewModelFactory
 import dagger.Binds
 import dagger.MapKey

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.wisekiddo.widgets.loaders.CurvesLoader
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:curves_animDuration="1000"
+        app:curves_curveColor="@color/blue_selected"
+        app:curves_curveSweepAngle="160"
+        app:curves_curveWidth="5dp"
+        app:curves_distanceBetweenCurves="5dp"
+        app:curves_interpolator="@android:anim/linear_interpolator"
+        app:curves_noOfCurves="5"
+        app:curves_outermostCurveRadius="50dp" />
+
+
+</LinearLayout>

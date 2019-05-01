@@ -11,16 +11,22 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.presentation
 
-import com.wisekiddo.application.base.BaseIntent
+import com.wisekiddo.application.base.BaseViewState
+import com.wisekiddo.models.MainViewModel
 
-sealed class MainIntent : BaseIntent {
 
-    object InitialIntent : MainIntent()
+sealed class MainUIModel(val inProgress: Boolean = false,
+                           val dataList: List<MainViewModel>? = null)
+    : BaseViewState {
 
-    object LoadDataIntent : MainIntent()
+    object InProgress : MainUIModel(true, null)
 
-    object RefreshDataIntent : MainIntent()
+    object Failed : MainUIModel()
+
+    data class Success(private val result: List<MainViewModel>?) : MainUIModel(false, result)
+
+    class Idle : MainUIModel(false, null)
 
 }

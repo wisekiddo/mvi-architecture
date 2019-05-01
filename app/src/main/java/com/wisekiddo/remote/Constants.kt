@@ -15,6 +15,6 @@ package com.wisekiddo.remote
 
 object Constants {
 
-    const val BASE_URL = "https://randomuser.me/api/"
+    const val BASE_URL = "https://randomuser.me"
 
 }

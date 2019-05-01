@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.presentation
 
 import com.wisekiddo.models.DomainModel
 import com.wisekiddo.application.base.BaseResult

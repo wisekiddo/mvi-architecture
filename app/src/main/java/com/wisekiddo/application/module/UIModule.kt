@@ -15,7 +15,7 @@ package com.wisekiddo.application.module
 
 import com.wisekiddo.application.executor.UIThread
 import com.wisekiddo.application.executor.PostExecutionThread
-import com.wisekiddo.presentation.feature.main.MainActivity
+import com.wisekiddo.feature.main.MainActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

@@ -11,22 +11,19 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.domain
 
-import com.wisekiddo.application.base.BaseViewState
-import com.wisekiddo.models.MainViewModel
+import io.reactivex.SingleObserver
+import io.reactivex.disposables.Disposable
 
 
-sealed class MainUIModel(val inProgress: Boolean = false,
-                           val dataList: List<MainViewModel>? = null)
-    : BaseViewState {
+/**
+ * Default [SingleObserver] base class to define
+ */
+open class BaseSingleObserver<T> : SingleObserver<T> {
 
-    object InProgress : MainUIModel(true, null)
-
-    object Failed : MainUIModel()
-
-    data class Success(private val result: List<MainViewModel>?) : MainUIModel(false, result)
-
-    class Idle : MainUIModel(false, null)
+    override fun onSubscribe(d: Disposable) { }
+    override fun onSuccess(t: T) { }
+    override fun onError(exception: Throwable) { }
 
 }

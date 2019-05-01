@@ -11,35 +11,47 @@
  * limitations under the License.
  */
 
-package com.wisekiddo.streams
+package com.wisekiddo.domain
 
 import com.wisekiddo.application.executor.PostExecutionThread
 import com.wisekiddo.application.executor.ThreadExecutor
-import io.reactivex.Flowable
+import io.reactivex.Completable
+import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
 
 
-
 /**
- * Abstract class for a UseCase that returns an instance of a [Flowable].
+ * Abstract class for a UseCase that returns an instance of a [Completable].
  */
-abstract class FlowableUseCase<T, in Params> constructor(
+abstract class CompletableUseCase<in Params> protected constructor(
     private val threadExecutor: ThreadExecutor,
     private val postExecutionThread: PostExecutionThread
 ) {
 
+    private val subscription = Disposables.empty()
+
     /**
-     * Builds a [Flowable] which will be used when the current [FlowableUseCase] is executed.
+     * Builds a [Completable] which will be used when the current [CompletableUseCase] is executed.
      */
-    protected abstract fun buildUseCaseObservable(params: Params? = null): Flowable<T>
+    protected abstract fun buildUseCaseObservable(params: Params): Completable
 
     /**
      * Executes the current use case.
      */
-    open fun execute(params: Params? = null): Flowable<T> {
+    fun execute(params: Params): Completable {
         return this.buildUseCaseObservable(params)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.scheduler)
+    }
+
+    /**
+     * Unsubscribes from current [Disposable].
+     */
+    fun unsubscribe() {
+        if (!subscription.isDisposed) {
+            subscription.dispose()
+        }
     }
 
 }

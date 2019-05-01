@@ -1,4 +1,4 @@
-package com.wisekiddo.presentation.feature.main
+package com.wisekiddo.feature.main
 
 import android.os.Bundle
 import android.view.Menu
@@ -16,6 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.wisekiddo.R
 import com.wisekiddo.application.base.BaseView
 import com.wisekiddo.application.mapper.PresentationStreamMapper
+import com.wisekiddo.presentation.MainDataViewModel
+import com.wisekiddo.presentation.MainIntent
+import com.wisekiddo.presentation.MainUIModel
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -26,17 +29,17 @@ class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     BaseView<MainIntent, MainUIModel> {
 
-    private val loadConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.LoadDataIntent>()
-    private val refreshConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
-
     @Inject
     lateinit var mapper: PresentationStreamMapper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var mainDataViewModel: MainDataViewModel
+
+    private val loadConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.LoadDataIntent>()
+    private val refreshConversationsIntentPublisher =
+        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity(),
             .get(MainDataViewModel::class.java)
 
         compositeDisposable.add(mainDataViewModel.states().subscribe({ render(it) }))
+
         mainDataViewModel.processIntents(intents())
     }
 
@@ -130,10 +134,10 @@ class MainActivity : AppCompatActivity(),
                 // Handle the camera action
             }
             R.id.nav_gallery -> {
-
+                // Nav Gallery
             }
             R.id.nav_slideshow -> {
-
+                // Navigation for slideshow
             }
             R.id.nav_tools -> {
 

@@ -1,12 +1,12 @@
-package com.wisekiddo.presentation.base
+package com.wisekiddo.feature.base
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationView
 import com.wisekiddo.application.base.BaseView
-import com.wisekiddo.presentation.feature.main.MainIntent
-import com.wisekiddo.presentation.feature.main.MainUIModel
+import com.wisekiddo.presentation.MainIntent
+import com.wisekiddo.presentation.MainUIModel
 
 
  abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
