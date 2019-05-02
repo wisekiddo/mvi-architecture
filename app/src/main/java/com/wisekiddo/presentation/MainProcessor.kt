@@ -23,7 +23,7 @@ class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
     private val conversationsProcessor: ObservableTransformer<
             MainAction.LoadData, MainResult> = ObservableTransformer{
                 it.switchMap {
-                    getDataList.execute()
+                    getDataList.execute(options = options)
                             .map {
                                 MainResult.LoadDataTask.success(
                                     it
@@ -38,6 +38,7 @@ class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
             }
 
     var actionProcessor: ObservableTransformer<MainAction, MainResult>
+    var options: Map<String, String> = HashMap()
 
     init {
         this.actionProcessor = ObservableTransformer { item ->

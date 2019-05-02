@@ -14,4 +14,10 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_base">BaseActivity</string>
+    <string name="hint">hint</string>
+
+    <string name="gender">Gender</string>
+    <string name="multiplier">Multiple User</string>
+    <string name="user_id">User ID (aka Seed)</string>
+    <string name="query">Query</string>
 </resources>

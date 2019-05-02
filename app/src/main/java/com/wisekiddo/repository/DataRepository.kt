@@ -40,10 +40,10 @@ class DataRepository @Inject constructor(private val factory: DataSourceFactory,
         return factory.retrieveCacheDataStore().saveDatList(dataModel)
     }
 
-    override fun getDataList(): Flowable<List<DomainModel>> {
+    override fun getDataList(options:Map<String, String>): Flowable<List<DomainModel>> {
         return factory.retrieveCacheDataStore().isCached()
                 .flatMapPublisher {
-                    factory.retrieveDataStore(it).getDataList(gender)
+                    factory.retrieveDataStore(it).getDataList(options)
                 }
                 .flatMap {
                     Flowable.just(it.map { repositoryStreamMapper.mapFromEntity(it) })

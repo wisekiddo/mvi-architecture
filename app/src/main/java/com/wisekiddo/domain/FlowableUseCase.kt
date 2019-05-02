@@ -31,13 +31,13 @@ abstract class FlowableUseCase<T, in Params> constructor(
     /**
      * Builds a [Flowable] which will be used when the current [FlowableUseCase] is executed.
      */
-    protected abstract fun buildUseCaseObservable(params: Params? = null): Flowable<T>
+    protected abstract fun buildUseCaseObservable(options:Map<String, String>): Flowable<T>
 
     /**
      * Executes the current use case.
      */
-    open fun execute(params: Params? = null): Flowable<T> {
-        return this.buildUseCaseObservable(params)
+    open fun execute(options:Map<String, String>): Flowable<T> {
+        return this.buildUseCaseObservable(options)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.scheduler)
     }

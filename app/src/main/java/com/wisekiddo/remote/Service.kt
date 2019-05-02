@@ -17,6 +17,7 @@ import com.wisekiddo.models.RemoteModel
 import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 /**
  * Defines the abstract methods used for interacting with the DomainModel API
@@ -24,18 +25,12 @@ import retrofit2.http.Query
 interface Service {
 
     @GET("/api/")
-    fun getData(@Query("gender") gender:String): Flowable<DataResponse>
+    fun getData(@QueryMap options:Map<String, String> ): Flowable<DataResponse>
 
     class DataResponse {
         lateinit var result: List<RemoteModel>
     }
 
-    //@GET("?gender=$gender")
-    //fun getDataByGender( gender:String,  id:String): Flowable<DataResponse>
 
-    //@Query("q") query: String,
-    //@Query("sort") sort: String,
-    //@Query("order") order: String
-    //user: https://randomuser.me/api/?seed=0002
-    //multiple user: https://randomuser.me/api/?results=10
+
 }

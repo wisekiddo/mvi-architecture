@@ -28,7 +28,7 @@ open class UIViewModelMapper @Inject constructor(): UIMapper<DataViewModel, Main
      * Map a [MainViewModel] instance to a [DataViewModel] instance
      */
     override fun mapToViewModel(type: MainViewModel): DataViewModel {
-        return DataViewModel(type.name, type.title, type.avatar)
+        return DataViewModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
 }

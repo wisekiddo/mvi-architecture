@@ -26,6 +26,6 @@ import io.reactivex.Single
 interface DataSource {
     fun clearDataList(): Completable
     fun saveDatList(repositoryList: List<RepositoryModel>): Completable
-    fun getDataList(): Flowable<List<RepositoryModel>>
+    fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>>
     fun isCached(): Single<Boolean>
 }

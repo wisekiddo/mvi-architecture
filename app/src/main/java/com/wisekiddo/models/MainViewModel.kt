@@ -16,4 +16,4 @@ package com.wisekiddo.models
 /**
  * Representation for a [MainViewModel] instance for this layers Model representation
  */
-class MainViewModel(val name: String, val title: String, val avatar: String)
+class MainViewModel(val seed: String, val name: String, val gender: String, val age: String, val dob: String, val email: String)

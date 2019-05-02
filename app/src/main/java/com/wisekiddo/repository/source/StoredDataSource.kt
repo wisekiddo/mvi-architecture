@@ -48,7 +48,7 @@ open class StoredDataSource @Inject constructor(private val dataStored: DataStor
     /**
      * Retrieve a list of [RepositoryModel] instance from the cache
      */
-    override fun getDataList(): Flowable<List<RepositoryModel>> {
+    override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
         return dataStored.getDataList()
     }
 

@@ -18,5 +18,5 @@ import io.reactivex.Observable
 interface BaseViewModel<I : BaseIntent, S : BaseViewState> {
     fun processIntents(intents: Observable<I>)
 
-    fun states(): Observable<S>
+    fun states(option:Map<String, String>): Observable<S>
 }

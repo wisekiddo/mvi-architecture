@@ -30,14 +30,14 @@ open class RepositoryStreamMapper @Inject constructor() :
      * Map a [RepositoryModel] instance to a [DomainModel] instance
      */
     override fun mapFromEntity(type: RepositoryModel): DomainModel {
-        return DomainModel(type.id, type.name, type.title, type.avatar)
+        return DomainModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
     /**
      * Map a [DomainModel] instance to a [RepositoryModel] instance
      */
     override fun mapToEntity(type: DomainModel): RepositoryModel {
-        return RepositoryModel(type.id, type.name, type.title, type.avatar)
+        return RepositoryModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
 

@@ -28,7 +28,7 @@ open class PresentationStreamMapper @Inject constructor():
      * Map a [DomainModel] instance to a [MainViewModel] instance
      */
     override fun mapToView(type: DomainModel): MainViewModel {
-        return MainViewModel(type.name, type.title, type.avatar)
+        return MainViewModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
 

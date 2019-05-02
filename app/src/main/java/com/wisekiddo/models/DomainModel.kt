@@ -16,4 +16,11 @@ package com.wisekiddo.models
 /**
  * Representation for a [DomainModel] fetched from an external layer data source
  */
-data class DomainModel(val id: Long, val name: String, val title: String, val avatar: String)
+data class DomainModel(
+    val seed: String,
+    val name: String,
+    val gender: String,
+    val age: String,
+    val dob: String,
+    val email: String
+)

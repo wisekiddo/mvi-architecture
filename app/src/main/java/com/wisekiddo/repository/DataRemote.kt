@@ -25,6 +25,6 @@ interface DataRemote {
     /**
      * Retrieve a list of data, from the cache
      */
-    fun getDataList(): Flowable<List<RepositoryModel>>
+    fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>>
 
 }

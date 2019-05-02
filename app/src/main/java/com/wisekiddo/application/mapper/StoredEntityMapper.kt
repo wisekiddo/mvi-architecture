@@ -28,14 +28,14 @@ open class StoredEntityMapper @Inject constructor():
      * Map a [RepositoryModel] instance to a [StoredModel] instance
      */
     override fun mapToCached(type: RepositoryModel): StoredModel {
-        return StoredModel(type.id, type.name, type.title, type.avatar)
+        return StoredModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
     /**
      * Map a [StoredModel] instance to a [RepositoryModel] instance
      */
     override fun mapFromCached(type: StoredModel): RepositoryModel {
-        return RepositoryModel(type.id, type.name, type.title, type.avatar)
+        return RepositoryModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
     }
 
 }

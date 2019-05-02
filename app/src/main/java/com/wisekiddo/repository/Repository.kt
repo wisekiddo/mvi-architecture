@@ -25,5 +25,5 @@ import io.reactivex.Flowable
 interface Repository {
     fun clearDataList(): Completable
     fun saveDataList(dataList: List<DomainModel>): Completable
-    fun getDataList(): Flowable<List<DomainModel>>
+    fun getDataList(options:Map<String, String>): Flowable<List<DomainModel>>
 }

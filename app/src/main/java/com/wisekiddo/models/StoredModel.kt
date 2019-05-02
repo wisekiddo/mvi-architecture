@@ -21,4 +21,4 @@ import com.wisekiddo.stored.db.Constants
  * Model used solely for the caching of a data
  */
 @Entity(tableName = Constants.TABLE_NAME)
-data class StoredModel(@PrimaryKey var id: Long, val name: String, val title: String, val avatar: String)
+data class StoredModel(@PrimaryKey val seed: String, val name: String, val gender: String, val age: String, val dob: String, val email: String)

@@ -58,7 +58,8 @@ open class MainDataViewModel @Inject internal constructor(
         intents.subscribe(intentsSubject)
     }
 
-    override fun states(): Observable<MainUIModel> {
+    override fun states(option: Map<String, String>): Observable<MainUIModel> {
+        mainProcessor.options=option
         return statesSubject
     }
 

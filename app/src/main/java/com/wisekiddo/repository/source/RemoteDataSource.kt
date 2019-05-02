@@ -39,8 +39,8 @@ open class RemoteDataSource @Inject constructor(private val dataRemote: DataRemo
     /**
      * Retrieve a list of [RepositoryModel] instances from the API
      */
-    override fun getDataList(): Flowable<List<RepositoryModel>> {
-        return dataRemote.getDataList()
+    override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
+        return dataRemote.getDataList(options)
     }
 
     override fun isCached(): Single<Boolean> {

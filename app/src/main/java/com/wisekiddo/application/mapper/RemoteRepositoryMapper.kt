@@ -28,7 +28,8 @@ open class RemoteRepositoryMapper @Inject constructor() :
      * Map an instance of a [RemoteModel] to a [RepositoryModel] model
      */
     override fun mapFromRemote(type: RemoteModel): RepositoryModel {
-        return RepositoryModel(type.id, type.name, type.title, type.avatar)
+        return RepositoryModel(type.seed, type.name, type.gender, type.age, type.dob, type.email)
+
     }
 
 }

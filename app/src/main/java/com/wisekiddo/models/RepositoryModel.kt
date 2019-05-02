@@ -17,4 +17,4 @@ package com.wisekiddo.models
  * Representation for a [RepositoryModel] fetched from an internal layer data source
  */
 
-data class RepositoryModel(val id: Long, val name: String, val title: String, val avatar: String)
+data class RepositoryModel(val seed: String, val name: String, val gender: String, val age: String, val dob: String, val email: String)

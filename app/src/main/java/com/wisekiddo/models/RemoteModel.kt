@@ -16,4 +16,4 @@ package com.wisekiddo.models
 /**
  * Representation for a [RemoteModel] fetched from the API
  */
-class RemoteModel(val id: Long, val name: String, val title: String, val avatar: String)
+class RemoteModel(val seed: String, val name: String, val gender: String, val age: String, val dob: String, val email: String)

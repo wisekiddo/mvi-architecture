@@ -29,8 +29,8 @@ open class GetDataList @Inject constructor(val repository: Repository,
 ):
         FlowableUseCase<List<DomainModel>, Void?>(threadExecutor, postExecutionThread) {
 
-    public override fun buildUseCaseObservable(params: Void?): Flowable<List<DomainModel>> {
-        return repository.getDataList( params.)
+    public override fun buildUseCaseObservable(options:Map<String, String>): Flowable<List<DomainModel>> {
+        return repository.getDataList(options)
     }
 
 }
