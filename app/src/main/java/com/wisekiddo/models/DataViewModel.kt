@@ -16,7 +16,7 @@ package com.wisekiddo.models
 /**
  * Representation for a [DataViewModel] fetched from an external layer data source
  */
-class DataViewModel(
+data class DataViewModel(
     var seed: String? = "",
     var name: String? = "",
     var gender: String? = "",
