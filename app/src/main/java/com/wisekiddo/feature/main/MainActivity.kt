@@ -38,6 +38,15 @@ class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     BaseView<MainIntent, MainUIModel> {
 
+
+    companion object {
+        init {
+            System.loadLibrary("libso")
+        }
+    }
+    external fun encrypt(plain: String): CharArray
+    external fun decrypt(encrypted: String): CharArray
+
     @Inject
     lateinit var mapper: PresentationStreamMapper
     @Inject
@@ -59,7 +68,6 @@ class MainActivity : AppCompatActivity(),
         BehaviorSubject.create<MainIntent.RefreshDataIntent>()
 
     private val compositeDisposable = CompositeDisposable()
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +109,16 @@ class MainActivity : AppCompatActivity(),
         compositeDisposable.add(mainDataViewModel.states(option).subscribe {
             render(it)
         })
+
+        //-- prepare sample Encryption
+
+        val strPlainText = "RSA Encrypt Text"
+        Log.i("RSA_Encrypt_Text",strPlainText)
+        val strEncryptedText = String(encrypt(strPlainText))
+        Log.i("Encrypted_Text","\t$strEncryptedText")
+
+        val strDecryptedText =String(decrypt(strEncryptedText))
+        Log.i("Decrypted_Text","\t$strDecryptedText")
     }
 
     private fun setupViews() {
