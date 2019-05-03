@@ -1,0 +1,977 @@
+Index: app/src/main/java/com/wisekiddo/domain/FlowableUseCase.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.domain\n\nimport com.wisekiddo.application.executor.PostExecutionThread\nimport com.wisekiddo.application.executor.ThreadExecutor\nimport io.reactivex.Flowable\nimport io.reactivex.schedulers.Schedulers\n\n\n\n/**\n * Abstract class for a UseCase that returns an instance of a [Flowable].\n */\nabstract class FlowableUseCase<T, in Params> constructor(\n    private val threadExecutor: ThreadExecutor,\n    private val postExecutionThread: PostExecutionThread\n) {\n\n    /**\n     * Builds a [Flowable] which will be used when the current [FlowableUseCase] is executed.\n     */\n    protected abstract fun buildUseCaseObservable(params: Params? = null): Flowable<T>\n\n    /**\n     * Executes the current use case.\n     */\n    open fun execute(params: Params? = null): Flowable<T> {\n        return this.buildUseCaseObservable(params)\n                .subscribeOn(Schedulers.from(threadExecutor))\n                .observeOn(postExecutionThread.scheduler)\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/domain/FlowableUseCase.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/domain/FlowableUseCase.kt	(date 1556733051000)
+@@ -31,13 +31,13 @@
+     /**
+      * Builds a [Flowable] which will be used when the current [FlowableUseCase] is executed.
+      */
+-    protected abstract fun buildUseCaseObservable(params: Params? = null): Flowable<T>
++    protected abstract fun buildUseCaseObservable(options:Map<String, String>): Flowable<T>
+ 
+     /**
+      * Executes the current use case.
+      */
+-    open fun execute(params: Params? = null): Flowable<T> {
+-        return this.buildUseCaseObservable(params)
++    open fun execute(options:Map<String, String>): Flowable<T> {
++        return this.buildUseCaseObservable(options)
+                 .subscribeOn(Schedulers.from(threadExecutor))
+                 .observeOn(postExecutionThread.scheduler)
+     }
+Index: app/src/main/java/com/wisekiddo/repository/source/RemoteDataSource.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository.source\n\nimport com.wisekiddo.models.RepositoryModel\nimport com.wisekiddo.repository.DataRemote\nimport com.wisekiddo.repository.DataSource\nimport io.reactivex.Completable\nimport io.reactivex.Flowable\nimport io.reactivex.Single\nimport javax.inject.Inject\n\n/**\n * Implementation of the [RemoteDataSource] interface to provide a means of communicating\n * with the remote data source\n */\nopen class RemoteDataSource @Inject constructor(private val dataRemote: DataRemote) :\n    DataSource {\n\n    override fun clearDataList(): Completable {\n        throw UnsupportedOperationException()\n    }\n\n    override fun saveDatList(repositoryList: List<RepositoryModel>): Completable {\n        throw UnsupportedOperationException()\n    }\n\n    /**\n     * Retrieve a list of [RepositoryModel] instances from the API\n     */\n    override fun getDataList(): Flowable<List<RepositoryModel>> {\n        return dataRemote.getDataList()\n    }\n\n    override fun isCached(): Single<Boolean> {\n        throw UnsupportedOperationException()\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/source/RemoteDataSource.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/source/RemoteDataSource.kt	(date 1556732859000)
+@@ -39,8 +39,8 @@
+     /**
+      * Retrieve a list of [RepositoryModel] instances from the API
+      */
+-    override fun getDataList(): Flowable<List<RepositoryModel>> {
+-        return dataRemote.getDataList()
++    override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
++        return dataRemote.getDataList(options)
+     }
+ 
+     override fun isCached(): Single<Boolean> {
+Index: app/src/main/java/com/wisekiddo/domain/GetDataList.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.domain\n\nimport com.wisekiddo.application.executor.PostExecutionThread\nimport com.wisekiddo.application.executor.ThreadExecutor\nimport com.wisekiddo.models.DomainModel\nimport com.wisekiddo.repository.Repository\nimport io.reactivex.Flowable\nimport javax.inject.Inject\n\n/**\n * Use case used for retrieving a [List] of [DomainModel] instances from the [Repository]\n */\nopen class GetDataList @Inject constructor(val repository: Repository,\n                                           threadExecutor: ThreadExecutor,\n                                           postExecutionThread: PostExecutionThread\n):\n        FlowableUseCase<List<DomainModel>, Void?>(threadExecutor, postExecutionThread) {\n\n    public override fun buildUseCaseObservable(params: Void?): Flowable<List<DomainModel>> {\n        return repository.getDataList( params.)\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/domain/GetDataList.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/domain/GetDataList.kt	(date 1556733051000)
+@@ -29,8 +29,8 @@
+ ):
+         FlowableUseCase<List<DomainModel>, Void?>(threadExecutor, postExecutionThread) {
+ 
+-    public override fun buildUseCaseObservable(params: Void?): Flowable<List<DomainModel>> {
+-        return repository.getDataList( params.)
++    public override fun buildUseCaseObservable(options:Map<String, String>): Flowable<List<DomainModel>> {
++        return repository.getDataList(options)
+     }
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/repository/source/StoredDataSource.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository.source\n\nimport com.wisekiddo.models.RepositoryModel\nimport com.wisekiddo.repository.DataStored\nimport com.wisekiddo.repository.DataSource\nimport io.reactivex.Completable\nimport io.reactivex.Flowable\nimport io.reactivex.Single\nimport javax.inject.Inject\n\n/**\n * Implementation of the [StoredDataSource] interface to provide a means of communicating\n * with the local data source\n */\nopen class StoredDataSource @Inject constructor(private val dataStored: DataStored) :\n    DataSource {\n\n    /**\n     * Clear all DataList from the cache\n     */\n    override fun clearDataList(): Completable {\n        return dataStored.clearDataList()\n    }\n\n    /**\n     * Save a given [List] of [RepositoryModel] instances to the cache\n     */\n    override fun saveDatList(repositoryList: List<RepositoryModel>): Completable {\n        return dataStored.saveDataList(repositoryList)\n                .doOnComplete {\n                    dataStored.setLastCacheTime(System.currentTimeMillis())\n                }\n    }\n\n    /**\n     * Retrieve a list of [RepositoryModel] instance from the cache\n     */\n    override fun getDataList(): Flowable<List<RepositoryModel>> {\n        return dataStored.getDataList()\n    }\n\n    /**\n     * Retrieve a list of [RepositoryModel] instance from the cache\n     */\n    override fun isCached(): Single<Boolean> {\n        return dataStored.isCached()\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/source/StoredDataSource.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/source/StoredDataSource.kt	(date 1556732920000)
+@@ -48,7 +48,7 @@
+     /**
+      * Retrieve a list of [RepositoryModel] instance from the cache
+      */
+-    override fun getDataList(): Flowable<List<RepositoryModel>> {
++    override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
+         return dataStored.getDataList()
+     }
+ 
+Index: app/src/main/java/com/wisekiddo/models/RemoteModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.models\n\n/**\n * Representation for a [RemoteModel] fetched from the API\n */\nclass RemoteModel(val id: Long, val name: String, val title: String, val avatar: String)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/models/RemoteModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/models/RemoteModel.kt	(date 1556841909000)
+@@ -16,4 +16,4 @@
+ /**
+  * Representation for a [RemoteModel] fetched from the API
+  */
+-class RemoteModel(val id: Long, val name: String, val title: String, val avatar: String)
+\ No newline at end of file
++data class RemoteModel(val id: Long, val name: String, val title: String, val avatar: String)
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/models/DataViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.models\n\n/**\n * Representation for a [DataViewModel] fetched from an external layer data source\n */\nclass DataViewModel(val name: String, val title: String, val avatar: String)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/models/DataViewModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/models/DataViewModel.kt	(date 1556841909000)
+@@ -16,4 +16,4 @@
+ /**
+  * Representation for a [DataViewModel] fetched from an external layer data source
+  */
+-class DataViewModel(val name: String, val title: String, val avatar: String)
+\ No newline at end of file
++data class DataViewModel(val name: String, val title: String, val avatar: String)
+\ No newline at end of file
+Index: app/src/main/res/layout/axtivity_details.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/axtivity_details.xml	(date 1556736371000)
++++ app/src/main/res/layout/axtivity_details.xml	(date 1556736371000)
+@@ -0,0 +1,36 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
++              android:layout_width="match_parent"
++              android:layout_height="match_parent">
++
++    <androidx.constraintlayout.widget.ConstraintLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++        <LinearLayout
++                android:orientation="vertical"
++                android:layout_width="395dp"
++                android:layout_height="wrap_content" android:layout_marginTop="32dp"
++                app:layout_constraintTop_toTopOf="parent" android:layout_marginEnd="32dp"
++                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
++                android:layout_marginStart="32dp" android:layout_marginBottom="32dp"
++                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.51">
++            <com.google.android.material.textfield.TextInputLayout
++                    android:layout_gravity="fill_vertical"
++                    android:layout_width="match_parent"
++                    android:layout_height="match_parent">
++
++                <TextView
++                        android:text="TextView"
++                        android:layout_width="match_parent"
++                        android:layout_height="wrap_content"
++                        android:id="@+id/textView2"/>
++                <com.google.android.material.textfield.TextInputEditText
++                        android:layout_width="match_parent"
++                        android:layout_height="wrap_content"
++                        android:hint="@string/hint"/>
++            </com.google.android.material.textfield.TextInputLayout>
++        </LinearLayout>
++    </androidx.constraintlayout.widget.ConstraintLayout>
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/models/MainViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.models\n\n/**\n * Representation for a [MainViewModel] instance for this layers Model representation\n */\nclass MainViewModel(val name: String, val title: String, val avatar: String)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/models/MainViewModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/models/MainViewModel.kt	(date 1556841909000)
+@@ -16,4 +16,4 @@
+ /**
+  * Representation for a [MainViewModel] instance for this layers Model representation
+  */
+-class MainViewModel(val name: String, val title: String, val avatar: String)
+\ No newline at end of file
++data class MainViewModel(val name: String, val title: String, val avatar: String)
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/models/RepositoryModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.models\n\n/**\n * Representation for a [RepositoryModel] fetched from an internal layer data source\n */\n\ndata class RepositoryModel(val id: Long, val name: String, val title: String, val avatar: String)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/models/RepositoryModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/models/RepositoryModel.kt	(date 1556708119000)
+@@ -17,4 +17,5 @@
+  * Representation for a [RepositoryModel] fetched from an internal layer data source
+  */
+ 
+-data class RepositoryModel(val id: Long, val name: String, val title: String, val avatar: String)
+\ No newline at end of file
++data class RepositoryModel(val id: Long, val name: String, val title: String, val avatar: String)
++data class QueryModel(val id: Long, val name: String, val title: String, val avatar: String)
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/presentation/MainDataViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.presentation\n\nimport androidx.lifecycle.ViewModel\nimport com.wisekiddo.application.base.BaseIntent\nimport com.wisekiddo.application.base.BaseViewModel\nimport com.wisekiddo.enums.TaskStatus\nimport com.wisekiddo.application.mapper.PresentationStreamMapper\nimport io.reactivex.Observable\nimport io.reactivex.ObservableTransformer\nimport io.reactivex.functions.BiFunction\nimport io.reactivex.subjects.PublishSubject\nimport javax.inject.Inject\n\nopen class MainDataViewModel @Inject internal constructor(\n    private val mainProcessor: MainProcessor,\n    private val presentationStreamMapper: PresentationStreamMapper\n)\n    : ViewModel(), BaseViewModel<MainIntent, MainUIModel> {\n\n    private var intentsSubject: PublishSubject<MainIntent> = PublishSubject.create()\n    private val intentFilter: ObservableTransformer<MainIntent, MainIntent> =\n            ObservableTransformer<MainIntent, MainIntent> {\n                it.publish {\n                    Observable.merge(it.ofType(MainIntent.InitialIntent::class.java).take(1),\n                            it.filter({ intent -> intent !is MainIntent.InitialIntent }))\n                }\n            }\n    private val reducer: BiFunction<MainUIModel, MainResult, MainUIModel> =\n            BiFunction<MainUIModel, MainResult, MainUIModel> { _, result ->\n                when (result) {\n                    is MainResult.LoadDataTask -> {\n                        when {\n                            result.status == TaskStatus.SUCCESS -> MainUIModel.Success(\n                                result.dataList?.map { presentationStreamMapper.mapToView(it) })\n                            result.status == TaskStatus.FAILURE -> MainUIModel.Failed\n                            result.status == TaskStatus.IN_FLIGHT -> MainUIModel.InProgress\n                            else -> MainUIModel.Idle()\n                        }\n                    }\n                }\n            }\n    private val statesSubject: Observable<MainUIModel> = compose()\n\n    override fun processIntents(intents: Observable<MainIntent>) {\n        intents.subscribe(intentsSubject)\n    }\n\n    override fun states(): Observable<MainUIModel> {\n        return statesSubject\n    }\n\n    private fun compose(): Observable<MainUIModel> {\n        return intentsSubject\n                .compose(intentFilter)\n                .map { this.actionFromIntent(it) }\n                .compose(mainProcessor.actionProcessor)\n                .scan<MainUIModel>(MainUIModel.Idle(), reducer)\n                .replay(1)\n                .autoConnect(0)\n    }\n\n    private fun actionFromIntent(intent: BaseIntent): MainAction {\n        return when (intent) {\n            is MainIntent.LoadDataIntent -> MainAction.LoadData\n            is MainIntent.RefreshDataIntent -> MainAction.LoadData\n            is MainIntent.InitialIntent -> MainAction.LoadData\n            else -> throw UnsupportedOperationException(\n                    \"Oops, that looks like an unknown intent: \" + intent)\n        }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/presentation/MainDataViewModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/presentation/MainDataViewModel.kt	(date 1556734505000)
+@@ -58,7 +58,8 @@
+         intents.subscribe(intentsSubject)
+     }
+ 
+-    override fun states(): Observable<MainUIModel> {
++    override fun states(option: Map<String, String>): Observable<MainUIModel> {
++        mainProcessor.options=option
+         return statesSubject
+     }
+ 
+Index: app/src/main/java/com/wisekiddo/presentation/MainProcessor.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.presentation\n\nimport com.wisekiddo.domain.GetDataList\nimport io.reactivex.Observable\nimport io.reactivex.ObservableTransformer\nimport javax.inject.Inject\n\nclass MainProcessor @Inject constructor(private val getDataList: GetDataList) {\n\n    private val conversationsProcessor: ObservableTransformer<\n            MainAction.LoadData, MainResult> = ObservableTransformer{\n                it.switchMap {\n                    getDataList.execute()\n                            .map {\n                                MainResult.LoadDataTask.success(\n                                    it\n                                )\n                            }\n                            .onErrorReturn {\n                                MainResult.LoadDataTask.failure()\n                            }\n                            .toObservable()\n                            .startWith(MainResult.LoadDataTask.inFlight())\n                }\n            }\n\n    var actionProcessor: ObservableTransformer<MainAction, MainResult>\n\n    init {\n        this.actionProcessor = ObservableTransformer { item ->\n            item.publish {\n                it.ofType(MainAction.LoadData::class.java)\n                        .compose(conversationsProcessor)\n                        .mergeWith(it.filter { it !is MainAction.LoadData }\n                            .flatMap {\n                                    Observable.error<MainResult>(\n                                            IllegalArgumentException(\"Unknown Action type\"))\n                                })\n            }\n        }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/presentation/MainProcessor.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/presentation/MainProcessor.kt	(date 1556734505000)
+@@ -23,7 +23,7 @@
+     private val conversationsProcessor: ObservableTransformer<
+             MainAction.LoadData, MainResult> = ObservableTransformer{
+                 it.switchMap {
+-                    getDataList.execute()
++                    getDataList.execute(options = options)
+                             .map {
+                                 MainResult.LoadDataTask.success(
+                                     it
+@@ -38,6 +38,7 @@
+             }
+ 
+     var actionProcessor: ObservableTransformer<MainAction, MainResult>
++    var options: Map<String, String> = HashMap()
+ 
+     init {
+         this.actionProcessor = ObservableTransformer { item ->
+Index: app/src/main/java/com/wisekiddo/remote/Service.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.remote\n\nimport com.wisekiddo.models.RemoteModel\nimport io.reactivex.Flowable\nimport retrofit2.http.GET\nimport retrofit2.http.Query\n\n/**\n * Defines the abstract methods used for interacting with the DomainModel API\n */\ninterface Service {\n\n    @GET(\"/api/\")\n    fun getData(@Query(\"gender\") gender:String): Flowable<DataResponse>\n\n    class DataResponse {\n        lateinit var result: List<RemoteModel>\n    }\n\n    //@GET(\"?gender=$gender\")\n    //fun getDataByGender( gender:String,  id:String): Flowable<DataResponse>\n\n    //@Query(\"q\") query: String,\n    //@Query(\"sort\") sort: String,\n    //@Query(\"order\") order: String\n    //user: https://randomuser.me/api/?seed=0002\n    //multiple user: https://randomuser.me/api/?results=10\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/remote/Service.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/remote/Service.kt	(date 1556751506000)
+@@ -17,6 +17,7 @@
+ import io.reactivex.Flowable
+ import retrofit2.http.GET
+ import retrofit2.http.Query
++import retrofit2.http.QueryMap
+ 
+ /**
+  * Defines the abstract methods used for interacting with the DomainModel API
+@@ -24,18 +25,12 @@
+ interface Service {
+ 
+     @GET("/api/")
+-    fun getData(@Query("gender") gender:String): Flowable<DataResponse>
++    fun getData(@QueryMap options:Map<String, String> ): Flowable<DataResponse>
+ 
+     class DataResponse {
+         lateinit var result: List<RemoteModel>
+     }
+ 
+-    //@GET("?gender=$gender")
+-    //fun getDataByGender( gender:String,  id:String): Flowable<DataResponse>
+ 
+-    //@Query("q") query: String,
+-    //@Query("sort") sort: String,
+-    //@Query("order") order: String
+-    //user: https://randomuser.me/api/?seed=0002
+-    //multiple user: https://randomuser.me/api/?results=10
++
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/remote/RemoteImpl.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.remote\n\nimport com.wisekiddo.models.RepositoryModel\nimport com.wisekiddo.repository.DataRemote\nimport io.reactivex.Flowable\nimport com.wisekiddo.application.mapper.RemoteRepositoryMapper\nimport javax.inject.Inject\n\n/**\n * Remote implementation for retrieving Data instances. This class implements the\n * [DataRemote] from the DomainModel layer as it is that layers responsibility for defining the\n * operations in which data store implementation layers can carry out.\n */\nclass RemoteImpl @Inject constructor(\n    private val service: Service,\n    private val remoteRepositoryMapper: RemoteRepositoryMapper\n) : DataRemote {\n\n    /**\n     * Retrieve a list of [RemoteRepositoryMapper] instances from the [Service].\n     */\n    override fun getDataList(): Flowable<List<RepositoryModel>> {\n        return service.getData()\n            .map { it.result }\n            .map { itemList ->\n                val entities = mutableListOf<RepositoryModel>()\n                itemList.forEach { entities.add(remoteRepositoryMapper.mapFromRemote(it)) }\n                entities\n            }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/remote/RemoteImpl.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/remote/RemoteImpl.kt	(date 1556732810000)
+@@ -32,8 +32,9 @@
+     /**
+      * Retrieve a list of [RemoteRepositoryMapper] instances from the [Service].
+      */
+-    override fun getDataList(): Flowable<List<RepositoryModel>> {
+-        return service.getData()
++    override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
++
++        return service.getData(options)
+             .map { it.result }
+             .map { itemList ->
+                 val entities = mutableListOf<RepositoryModel>()
+Index: .idea/codeStyles/Project.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><component name=\"ProjectCodeStyleConfiguration\">\n  <code_scheme name=\"Project\" version=\"173\">\n    <JetCodeStyleSettings>\n      <option name=\"CODE_STYLE_DEFAULTS\" value=\"KOTLIN_OFFICIAL\" />\n    </JetCodeStyleSettings>\n    <codeStyleSettings language=\"kotlin\">\n      <option name=\"CODE_STYLE_DEFAULTS\" value=\"KOTLIN_OFFICIAL\" />\n    </codeStyleSettings>\n  </code_scheme>\n</component>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/codeStyles/Project.xml	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ .idea/codeStyles/Project.xml	(date 1556751976000)
+@@ -1,8 +1,56 @@
+ <component name="ProjectCodeStyleConfiguration">
+   <code_scheme name="Project" version="173">
++    <DBN-PSQL>
++      <case-options enabled="true">
++        <option name="KEYWORD_CASE" value="lower" />
++        <option name="FUNCTION_CASE" value="lower" />
++        <option name="PARAMETER_CASE" value="lower" />
++        <option name="DATATYPE_CASE" value="lower" />
++        <option name="OBJECT_CASE" value="preserve" />
++      </case-options>
++      <formatting-settings enabled="false" />
++    </DBN-PSQL>
++    <DBN-SQL>
++      <case-options enabled="true">
++        <option name="KEYWORD_CASE" value="lower" />
++        <option name="FUNCTION_CASE" value="lower" />
++        <option name="PARAMETER_CASE" value="lower" />
++        <option name="DATATYPE_CASE" value="lower" />
++        <option name="OBJECT_CASE" value="preserve" />
++      </case-options>
++      <formatting-settings enabled="false">
++        <option name="STATEMENT_SPACING" value="one_line" />
++        <option name="CLAUSE_CHOP_DOWN" value="chop_down_if_statement_long" />
++        <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
++      </formatting-settings>
++    </DBN-SQL>
+     <JetCodeStyleSettings>
+       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+     </JetCodeStyleSettings>
++    <DBN-PSQL>
++      <case-options enabled="true">
++        <option name="KEYWORD_CASE" value="lower" />
++        <option name="FUNCTION_CASE" value="lower" />
++        <option name="PARAMETER_CASE" value="lower" />
++        <option name="DATATYPE_CASE" value="lower" />
++        <option name="OBJECT_CASE" value="preserve" />
++      </case-options>
++      <formatting-settings enabled="false" />
++    </DBN-PSQL>
++    <DBN-SQL>
++      <case-options enabled="true">
++        <option name="KEYWORD_CASE" value="lower" />
++        <option name="FUNCTION_CASE" value="lower" />
++        <option name="PARAMETER_CASE" value="lower" />
++        <option name="DATATYPE_CASE" value="lower" />
++        <option name="OBJECT_CASE" value="preserve" />
++      </case-options>
++      <formatting-settings enabled="false">
++        <option name="STATEMENT_SPACING" value="one_line" />
++        <option name="CLAUSE_CHOP_DOWN" value="chop_down_if_statement_long" />
++        <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
++      </formatting-settings>
++    </DBN-SQL>
+     <codeStyleSettings language="kotlin">
+       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+     </codeStyleSettings>
+Index: app/src/main/java/com/wisekiddo/application/base/BaseViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.application.base\n\nimport io.reactivex.Observable\n\ninterface BaseViewModel<I : BaseIntent, S : BaseViewState> {\n    fun processIntents(intents: Observable<I>)\n\n    fun states(): Observable<S>\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/application/base/BaseViewModel.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/application/base/BaseViewModel.kt	(date 1556732368000)
+@@ -18,5 +18,5 @@
+ interface BaseViewModel<I : BaseIntent, S : BaseViewState> {
+     fun processIntents(intents: Observable<I>)
+ 
+-    fun states(): Observable<S>
++    fun states(option:Map<String, String>): Observable<S>
+ }
+\ No newline at end of file
+Index: .idea/dbnavigator.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/dbnavigator.xml	(date 1556698719000)
++++ .idea/dbnavigator.xml	(date 1556698719000)
+@@ -0,0 +1,456 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="DBNavigator.Project.DataEditorManager">
++    <record-view-column-sorting-type value="BY_INDEX" />
++    <value-preview-text-wrapping value="true" />
++    <value-preview-pinned value="false" />
++  </component>
++  <component name="DBNavigator.Project.DataExportManager">
++    <export-instructions>
++      <create-header value="true" />
++      <quote-values-containing-separator value="true" />
++      <quote-all-values value="false" />
++      <value-separator value="" />
++      <file-name value="" />
++      <file-location value="" />
++      <scope value="GLOBAL" />
++      <destination value="FILE" />
++      <format value="EXCEL" />
++      <charset value="UTF-8" />
++    </export-instructions>
++  </component>
++  <component name="DBNavigator.Project.DatabaseBrowserManager">
++    <autoscroll-to-editor value="false" />
++    <autoscroll-from-editor value="true" />
++    <show-object-properties value="true" />
++    <loaded-nodes />
++  </component>
++  <component name="DBNavigator.Project.DatabaseFileManager">
++    <open-files />
++  </component>
++  <component name="DBNavigator.Project.EditorStateManager">
++    <last-used-providers />
++  </component>
++  <component name="DBNavigator.Project.MethodExecutionManager">
++    <method-browser />
++    <execution-history>
++      <group-entries value="true" />
++      <execution-inputs />
++    </execution-history>
++    <argument-values-cache />
++  </component>
++  <component name="DBNavigator.Project.ObjectDependencyManager">
++    <last-used-dependency-type value="INCOMING" />
++  </component>
++  <component name="DBNavigator.Project.ObjectQuickFilterManager">
++    <last-used-operator value="EQUAL" />
++    <filters />
++  </component>
++  <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
++    <recently-used-interfaces />
++  </component>
++  <component name="DBNavigator.Project.Settings">
++    <connections />
++    <browser-settings>
++      <general>
++        <display-mode value="TABBED" />
++        <navigation-history-size value="100" />
++        <show-object-details value="false" />
++      </general>
++      <filters>
++        <object-type-filter>
++          <object-type name="SCHEMA" enabled="true" />
++          <object-type name="USER" enabled="true" />
++          <object-type name="ROLE" enabled="true" />
++          <object-type name="PRIVILEGE" enabled="true" />
++          <object-type name="CHARSET" enabled="true" />
++          <object-type name="TABLE" enabled="true" />
++          <object-type name="VIEW" enabled="true" />
++          <object-type name="MATERIALIZED_VIEW" enabled="true" />
++          <object-type name="NESTED_TABLE" enabled="true" />
++          <object-type name="COLUMN" enabled="true" />
++          <object-type name="INDEX" enabled="true" />
++          <object-type name="CONSTRAINT" enabled="true" />
++          <object-type name="DATASET_TRIGGER" enabled="true" />
++          <object-type name="DATABASE_TRIGGER" enabled="true" />
++          <object-type name="SYNONYM" enabled="true" />
++          <object-type name="SEQUENCE" enabled="true" />
++          <object-type name="PROCEDURE" enabled="true" />
++          <object-type name="FUNCTION" enabled="true" />
++          <object-type name="PACKAGE" enabled="true" />
++          <object-type name="TYPE" enabled="true" />
++          <object-type name="TYPE_ATTRIBUTE" enabled="true" />
++          <object-type name="ARGUMENT" enabled="true" />
++          <object-type name="DIMENSION" enabled="true" />
++          <object-type name="CLUSTER" enabled="true" />
++          <object-type name="DBLINK" enabled="true" />
++        </object-type-filter>
++      </filters>
++      <sorting>
++        <object-type name="COLUMN" sorting-type="NAME" />
++        <object-type name="FUNCTION" sorting-type="NAME" />
++        <object-type name="PROCEDURE" sorting-type="NAME" />
++        <object-type name="ARGUMENT" sorting-type="POSITION" />
++      </sorting>
++      <default-editors>
++        <object-type name="VIEW" editor-type="SELECTION" />
++        <object-type name="PACKAGE" editor-type="SELECTION" />
++        <object-type name="TYPE" editor-type="SELECTION" />
++      </default-editors>
++    </browser-settings>
++    <navigation-settings>
++      <lookup-filters>
++        <lookup-objects>
++          <object-type name="SCHEMA" enabled="true" />
++          <object-type name="USER" enabled="false" />
++          <object-type name="ROLE" enabled="false" />
++          <object-type name="PRIVILEGE" enabled="false" />
++          <object-type name="CHARSET" enabled="false" />
++          <object-type name="TABLE" enabled="true" />
++          <object-type name="VIEW" enabled="true" />
++          <object-type name="MATERIALIZED VIEW" enabled="true" />
++          <object-type name="NESTED TABLE" enabled="false" />
++          <object-type name="COLUMN" enabled="false" />
++          <object-type name="INDEX" enabled="true" />
++          <object-type name="CONSTRAINT" enabled="true" />
++          <object-type name="DATASET TRIGGER" enabled="true" />
++          <object-type name="DATABASE TRIGGER" enabled="true" />
++          <object-type name="SYNONYM" enabled="false" />
++          <object-type name="SEQUENCE" enabled="true" />
++          <object-type name="PROCEDURE" enabled="true" />
++          <object-type name="FUNCTION" enabled="true" />
++          <object-type name="PACKAGE" enabled="true" />
++          <object-type name="TYPE" enabled="true" />
++          <object-type name="TYPE ATTRIBUTE" enabled="false" />
++          <object-type name="ARGUMENT" enabled="false" />
++          <object-type name="DIMENSION" enabled="false" />
++          <object-type name="CLUSTER" enabled="false" />
++          <object-type name="DBLINK" enabled="true" />
++        </lookup-objects>
++        <force-database-load value="false" />
++        <prompt-connection-selection value="true" />
++        <prompt-schema-selection value="true" />
++      </lookup-filters>
++    </navigation-settings>
++    <dataset-grid-settings>
++      <general>
++        <enable-zooming value="true" />
++        <enable-column-tooltip value="true" />
++      </general>
++      <sorting>
++        <nulls-first value="true" />
++        <max-sorting-columns value="4" />
++      </sorting>
++      <tracking-columns>
++        <columnNames value="" />
++        <visible value="true" />
++        <editable value="false" />
++      </tracking-columns>
++    </dataset-grid-settings>
++    <dataset-editor-settings>
++      <text-editor-popup>
++        <active value="false" />
++        <active-if-empty value="false" />
++        <data-length-threshold value="100" />
++        <popup-delay value="1000" />
++      </text-editor-popup>
++      <values-actions-popup>
++        <show-popup-button value="true" />
++        <element-count-threshold value="1000" />
++        <data-length-threshold value="250" />
++      </values-actions-popup>
++      <general>
++        <fetch-block-size value="100" />
++        <fetch-timeout value="30" />
++        <trim-whitespaces value="true" />
++        <convert-empty-strings-to-null value="true" />
++        <select-content-on-cell-edit value="true" />
++        <large-value-preview-active value="true" />
++      </general>
++      <filters>
++        <prompt-filter-dialog value="true" />
++        <default-filter-type value="BASIC" />
++      </filters>
++      <qualified-text-editor text-length-threshold="300">
++        <content-types>
++          <content-type name="Text" enabled="true" />
++          <content-type name="Properties" enabled="true" />
++          <content-type name="XML" enabled="true" />
++          <content-type name="DTD" enabled="true" />
++          <content-type name="HTML" enabled="true" />
++          <content-type name="XHTML" enabled="true" />
++          <content-type name="Java" enabled="true" />
++          <content-type name="SQL" enabled="true" />
++          <content-type name="PL/SQL" enabled="true" />
++          <content-type name="Groovy" enabled="true" />
++          <content-type name="AIDL" enabled="true" />
++          <content-type name="YAML" enabled="true" />
++          <content-type name="Manifest" enabled="true" />
++        </content-types>
++      </qualified-text-editor>
++      <record-navigation>
++        <navigation-target value="VIEWER" />
++      </record-navigation>
++    </dataset-editor-settings>
++    <code-editor-settings>
++      <general>
++        <show-object-navigation-gutter value="false" />
++        <show-spec-declaration-navigation-gutter value="true" />
++        <enable-spellchecking value="true" />
++        <enable-reference-spellchecking value="false" />
++      </general>
++      <confirmations>
++        <save-changes value="false" />
++        <revert-changes value="true" />
++      </confirmations>
++    </code-editor-settings>
++    <code-completion-settings>
++      <filters>
++        <basic-filter>
++          <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
++          <filter-element type="RESERVED_WORD" id="function" selected="true" />
++          <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
++          <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
++          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
++          <filter-element type="OBJECT" id="schema" selected="true" />
++          <filter-element type="OBJECT" id="role" selected="true" />
++          <filter-element type="OBJECT" id="user" selected="true" />
++          <filter-element type="OBJECT" id="privilege" selected="true" />
++          <user-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="false" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </user-schema>
++          <public-schema>
++            <filter-element type="OBJECT" id="table" selected="false" />
++            <filter-element type="OBJECT" id="view" selected="false" />
++            <filter-element type="OBJECT" id="materialized view" selected="false" />
++            <filter-element type="OBJECT" id="index" selected="false" />
++            <filter-element type="OBJECT" id="constraint" selected="false" />
++            <filter-element type="OBJECT" id="trigger" selected="false" />
++            <filter-element type="OBJECT" id="synonym" selected="false" />
++            <filter-element type="OBJECT" id="sequence" selected="false" />
++            <filter-element type="OBJECT" id="procedure" selected="false" />
++            <filter-element type="OBJECT" id="function" selected="false" />
++            <filter-element type="OBJECT" id="package" selected="false" />
++            <filter-element type="OBJECT" id="type" selected="false" />
++            <filter-element type="OBJECT" id="dimension" selected="false" />
++            <filter-element type="OBJECT" id="cluster" selected="false" />
++            <filter-element type="OBJECT" id="dblink" selected="false" />
++          </public-schema>
++          <any-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </any-schema>
++        </basic-filter>
++        <extended-filter>
++          <filter-element type="RESERVED_WORD" id="keyword" selected="true" />
++          <filter-element type="RESERVED_WORD" id="function" selected="true" />
++          <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
++          <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
++          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
++          <filter-element type="OBJECT" id="schema" selected="true" />
++          <filter-element type="OBJECT" id="user" selected="true" />
++          <filter-element type="OBJECT" id="role" selected="true" />
++          <filter-element type="OBJECT" id="privilege" selected="true" />
++          <user-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </user-schema>
++          <public-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </public-schema>
++          <any-schema>
++            <filter-element type="OBJECT" id="table" selected="true" />
++            <filter-element type="OBJECT" id="view" selected="true" />
++            <filter-element type="OBJECT" id="materialized view" selected="true" />
++            <filter-element type="OBJECT" id="index" selected="true" />
++            <filter-element type="OBJECT" id="constraint" selected="true" />
++            <filter-element type="OBJECT" id="trigger" selected="true" />
++            <filter-element type="OBJECT" id="synonym" selected="true" />
++            <filter-element type="OBJECT" id="sequence" selected="true" />
++            <filter-element type="OBJECT" id="procedure" selected="true" />
++            <filter-element type="OBJECT" id="function" selected="true" />
++            <filter-element type="OBJECT" id="package" selected="true" />
++            <filter-element type="OBJECT" id="type" selected="true" />
++            <filter-element type="OBJECT" id="dimension" selected="true" />
++            <filter-element type="OBJECT" id="cluster" selected="true" />
++            <filter-element type="OBJECT" id="dblink" selected="true" />
++          </any-schema>
++        </extended-filter>
++      </filters>
++      <sorting enabled="true">
++        <sorting-element type="RESERVED_WORD" id="keyword" />
++        <sorting-element type="RESERVED_WORD" id="datatype" />
++        <sorting-element type="OBJECT" id="column" />
++        <sorting-element type="OBJECT" id="table" />
++        <sorting-element type="OBJECT" id="view" />
++        <sorting-element type="OBJECT" id="materialized view" />
++        <sorting-element type="OBJECT" id="index" />
++        <sorting-element type="OBJECT" id="constraint" />
++        <sorting-element type="OBJECT" id="trigger" />
++        <sorting-element type="OBJECT" id="synonym" />
++        <sorting-element type="OBJECT" id="sequence" />
++        <sorting-element type="OBJECT" id="procedure" />
++        <sorting-element type="OBJECT" id="function" />
++        <sorting-element type="OBJECT" id="package" />
++        <sorting-element type="OBJECT" id="type" />
++        <sorting-element type="OBJECT" id="dimension" />
++        <sorting-element type="OBJECT" id="cluster" />
++        <sorting-element type="OBJECT" id="dblink" />
++        <sorting-element type="OBJECT" id="schema" />
++        <sorting-element type="OBJECT" id="role" />
++        <sorting-element type="OBJECT" id="user" />
++        <sorting-element type="RESERVED_WORD" id="function" />
++        <sorting-element type="RESERVED_WORD" id="parameter" />
++      </sorting>
++      <format>
++        <enforce-code-style-case value="true" />
++      </format>
++    </code-completion-settings>
++    <execution-engine-settings>
++      <statement-execution>
++        <fetch-block-size value="100" />
++        <execution-timeout value="20" />
++        <debug-execution-timeout value="600" />
++        <focus-result value="false" />
++        <prompt-execution value="false" />
++      </statement-execution>
++      <script-execution>
++        <command-line-interfaces />
++        <execution-timeout value="300" />
++      </script-execution>
++      <method-execution>
++        <execution-timeout value="30" />
++        <debug-execution-timeout value="600" />
++        <parameter-history-size value="10" />
++      </method-execution>
++    </execution-engine-settings>
++    <operation-settings>
++      <transactions>
++        <uncommitted-changes>
++          <on-project-close value="ASK" />
++          <on-disconnect value="ASK" />
++          <on-autocommit-toggle value="ASK" />
++        </uncommitted-changes>
++        <multiple-uncommitted-changes>
++          <on-commit value="ASK" />
++          <on-rollback value="ASK" />
++        </multiple-uncommitted-changes>
++      </transactions>
++      <session-browser>
++        <disconnect-session value="ASK" />
++        <kill-session value="ASK" />
++        <reload-on-filter-change value="false" />
++      </session-browser>
++      <compiler>
++        <compile-type value="KEEP" />
++        <compile-dependencies value="ASK" />
++        <always-show-controls value="false" />
++      </compiler>
++      <debugger>
++        <debugger-type value="ASK" />
++        <use-generic-runners value="true" />
++      </debugger>
++    </operation-settings>
++    <ddl-file-settings>
++      <extensions>
++        <mapping file-type-id="VIEW" extensions="vw" />
++        <mapping file-type-id="TRIGGER" extensions="trg" />
++        <mapping file-type-id="PROCEDURE" extensions="prc" />
++        <mapping file-type-id="FUNCTION" extensions="fnc" />
++        <mapping file-type-id="PACKAGE" extensions="pkg" />
++        <mapping file-type-id="PACKAGE_SPEC" extensions="pks" />
++        <mapping file-type-id="PACKAGE_BODY" extensions="pkb" />
++        <mapping file-type-id="TYPE" extensions="tpe" />
++        <mapping file-type-id="TYPE_SPEC" extensions="tps" />
++        <mapping file-type-id="TYPE_BODY" extensions="tpb" />
++      </extensions>
++      <general>
++        <lookup-ddl-files value="true" />
++        <create-ddl-files value="false" />
++        <synchronize-ddl-files value="true" />
++        <use-qualified-names value="false" />
++        <make-scripts-rerunnable value="true" />
++      </general>
++    </ddl-file-settings>
++    <general-settings>
++      <regional-settings>
++        <date-format value="MEDIUM" />
++        <number-format value="UNGROUPED" />
++        <locale value="SYSTEM_DEFAULT" />
++        <use-custom-formats value="false" />
++      </regional-settings>
++      <environment>
++        <environment-types>
++          <environment-type id="development" name="Development" description="Development environment" color="-2430209/-12296320" readonly-code="false" readonly-data="false" />
++          <environment-type id="integration" name="Integration" description="Integration environment" color="-2621494/-12163514" readonly-code="true" readonly-data="false" />
++          <environment-type id="production" name="Production" description="Productive environment" color="-11574/-10271420" readonly-code="true" readonly-data="true" />
++          <environment-type id="other" name="Other" description="" color="-1576/-10724543" readonly-code="false" readonly-data="false" />
++        </environment-types>
++        <visibility-settings>
++          <connection-tabs value="true" />
++          <dialog-headers value="true" />
++          <object-editor-tabs value="true" />
++          <script-editor-tabs value="false" />
++          <execution-result-tabs value="true" />
++        </visibility-settings>
++      </environment>
++    </general-settings>
++  </component>
++  <component name="DBNavigator.Project.StatementExecutionManager">
++    <execution-variables />
++  </component>
++</project>
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/feature/main/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.wisekiddo.feature.main\n\nimport android.os.Bundle\nimport android.view.Menu\nimport android.view.MenuItem\nimport androidx.appcompat.app.ActionBarDrawerToggle\nimport androidx.appcompat.app.AppCompatActivity\nimport androidx.appcompat.widget.Toolbar\nimport androidx.core.view.GravityCompat\nimport androidx.drawerlayout.widget.DrawerLayout\nimport androidx.lifecycle.ViewModelProvider\nimport androidx.lifecycle.ViewModelProviders\nimport com.google.android.material.floatingactionbutton.FloatingActionButton\nimport com.google.android.material.navigation.NavigationView\nimport com.google.android.material.snackbar.Snackbar\nimport com.wisekiddo.R\nimport com.wisekiddo.application.base.BaseView\nimport com.wisekiddo.application.mapper.PresentationStreamMapper\nimport com.wisekiddo.presentation.MainDataViewModel\nimport com.wisekiddo.presentation.MainIntent\nimport com.wisekiddo.presentation.MainUIModel\nimport dagger.android.AndroidInjection\nimport io.reactivex.Observable\nimport io.reactivex.disposables.CompositeDisposable\nimport io.reactivex.subjects.BehaviorSubject\nimport javax.inject.Inject\n\nclass MainActivity : AppCompatActivity(),\n    NavigationView.OnNavigationItemSelectedListener,\n    BaseView<MainIntent, MainUIModel> {\n\n    @Inject\n    lateinit var mapper: PresentationStreamMapper\n    @Inject\n    lateinit var viewModelFactory: ViewModelProvider.Factory\n\n    private lateinit var mainDataViewModel: MainDataViewModel\n\n    private val loadConversationsIntentPublisher =\n        BehaviorSubject.create<MainIntent.LoadDataIntent>()\n    private val refreshConversationsIntentPublisher =\n        BehaviorSubject.create<MainIntent.RefreshDataIntent>()\n\n    private val compositeDisposable = CompositeDisposable()\n\n\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_main)\n        val toolbar: Toolbar = findViewById(R.id.toolbar)\n        setSupportActionBar(toolbar)\n\n        val fab: FloatingActionButton = findViewById(R.id.fab)\n        fab.setOnClickListener { view ->\n            Snackbar.make(view, \"Replace with your own action\", Snackbar.LENGTH_LONG)\n                .setAction(\"Action\", null).show()\n        }\n        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)\n        val navView: NavigationView = findViewById(R.id.nav_view)\n        val toggle = ActionBarDrawerToggle(\n            this, drawerLayout, toolbar,\n            R.string.navigation_drawer_open,\n            R.string.navigation_drawer_close\n        )\n        drawerLayout.addDrawerListener(toggle)\n        toggle.syncState()\n\n        navView.setNavigationItemSelectedListener(this)\n\n        AndroidInjection.inject(this)\n        mainDataViewModel = ViewModelProviders.of(this, viewModelFactory)\n            .get(MainDataViewModel::class.java)\n\n        compositeDisposable.add(mainDataViewModel.states().subscribe({ render(it) }))\n\n        mainDataViewModel.processIntents(intents())\n    }\n\n    override fun onDestroy() {\n        compositeDisposable.dispose()\n        super.onDestroy()\n    }\n\n    override fun intents(): Observable<MainIntent> {\n        return Observable.merge(initialIntent(), loadConversationsIntentPublisher,\n            refreshConversationsIntentPublisher)\n    }\n\n    private fun initialIntent(): Observable<MainIntent.InitialIntent> {\n        return Observable.just(MainIntent.InitialIntent)\n    }\n\n    override fun render(state: MainUIModel) {\n        when {\n            state.inProgress -> {\n            }\n            state is MainUIModel.Failed -> {\n            }\n            state is MainUIModel.Success -> {\n            }\n        }\n    }\n\n    override fun onBackPressed() {\n        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)\n        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {\n            drawerLayout.closeDrawer(GravityCompat.START)\n        } else {\n            super.onBackPressed()\n        }\n    }\n\n    override fun onCreateOptionsMenu(menu: Menu): Boolean {\n        // Inflate the menu; this adds items to the action bar if it is present.\n        menuInflater.inflate(R.menu.main, menu)\n        return true\n    }\n\n    override fun onOptionsItemSelected(item: MenuItem): Boolean {\n        // Handle action bar item clicks here. The action bar will\n        // automatically handle clicks on the Home/Up button, so long\n        // as you specify a parent activity in AndroidManifest.xml.\n        return when (item.itemId) {\n            R.id.action_settings -> true\n            else -> super.onOptionsItemSelected(item)\n        }\n    }\n\n    override fun onNavigationItemSelected(item: MenuItem): Boolean {\n        // Handle navigation view item clicks here.\n        when (item.itemId) {\n            R.id.nav_home -> {\n                // Handle the camera action\n            }\n            R.id.nav_gallery -> {\n                // Nav Gallery\n            }\n            R.id.nav_slideshow -> {\n                // Navigation for slideshow\n            }\n            R.id.nav_tools -> {\n\n            }\n            R.id.nav_share -> {\n\n            }\n            R.id.nav_send -> {\n\n            }\n        }\n        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)\n        drawerLayout.closeDrawer(GravityCompat.START)\n        return true\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/feature/main/MainActivity.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/feature/main/MainActivity.kt	(date 1556735468000)
+@@ -68,11 +68,16 @@
+ 
+         navView.setNavigationItemSelectedListener(this)
+ 
++        //-----
+         AndroidInjection.inject(this)
+         mainDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+             .get(MainDataViewModel::class.java)
+ 
+-        compositeDisposable.add(mainDataViewModel.states().subscribe({ render(it) }))
++        val option= HashMap<String, String>()
++        option["gender"] = "male"
++        compositeDisposable.add(mainDataViewModel.states(option).subscribe {
++            render(it)
++        })
+ 
+         mainDataViewModel.processIntents(intents())
+     }
+@@ -94,6 +99,7 @@
+     override fun render(state: MainUIModel) {
+         when {
+             state.inProgress -> {
++
+             }
+             state is MainUIModel.Failed -> {
+             }
+Index: app/src/main/java/com/wisekiddo/repository/DataRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository\n\nimport com.wisekiddo.application.mapper.RepositoryStreamMapper\nimport com.wisekiddo.models.RepositoryModel\nimport com.wisekiddo.repository.source.DataSourceFactory\nimport com.wisekiddo.models.DomainModel\nimport io.reactivex.Completable\nimport io.reactivex.Flowable\nimport javax.inject.Inject\n\n/**\n * Provides an implementation of the [DataRepository] interface for communicating to and from\n * data sources\n */\nclass DataRepository @Inject constructor(private val factory: DataSourceFactory,\n                                         private val repositoryStreamMapper: RepositoryStreamMapper\n):\n    Repository {\n\n    override fun clearDataList(): Completable {\n        return factory.retrieveCacheDataStore().clearDataList()\n    }\n\n    override fun saveDataList(dataList: List<DomainModel>): Completable {\n        val dataModel = mutableListOf<RepositoryModel>()\n        dataList.map { dataModel.add(repositoryStreamMapper.mapToEntity(it)) }\n        return factory.retrieveCacheDataStore().saveDatList(dataModel)\n    }\n\n    override fun getDataList(): Flowable<List<DomainModel>> {\n        return factory.retrieveCacheDataStore().isCached()\n                .flatMapPublisher {\n                    factory.retrieveDataStore(it).getDataList(gender)\n                }\n                .flatMap {\n                    Flowable.just(it.map { repositoryStreamMapper.mapFromEntity(it) })\n                }\n                .flatMap {\n                    saveDataList(it).toSingle { it }.toFlowable()\n                }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/DataRepository.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/DataRepository.kt	(date 1556732958000)
+@@ -40,10 +40,10 @@
+         return factory.retrieveCacheDataStore().saveDatList(dataModel)
+     }
+ 
+-    override fun getDataList(): Flowable<List<DomainModel>> {
++    override fun getDataList(options:Map<String, String>): Flowable<List<DomainModel>> {
+         return factory.retrieveCacheDataStore().isCached()
+                 .flatMapPublisher {
+-                    factory.retrieveDataStore(it).getDataList(gender)
++                    factory.retrieveDataStore(it).getDataList(options)
+                 }
+                 .flatMap {
+                     Flowable.just(it.map { repositoryStreamMapper.mapFromEntity(it) })
+Index: app/src/main/java/com/wisekiddo/repository/Repository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository\n\nimport com.wisekiddo.models.DomainModel\nimport io.reactivex.Completable\nimport io.reactivex.Flowable\n\n/**\n * Interface defining methods for how the data layer can pass data to and from the Domain layer.\n * This is to be implemented by the data layer, setting the requirements for the\n * operations that need to be implemented\n */\ninterface Repository {\n    fun clearDataList(): Completable\n    fun saveDataList(dataList: List<DomainModel>): Completable\n    fun getDataList(): Flowable<List<DomainModel>>\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/Repository.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/Repository.kt	(date 1556732958000)
+@@ -25,5 +25,5 @@
+ interface Repository {
+     fun clearDataList(): Completable
+     fun saveDataList(dataList: List<DomainModel>): Completable
+-    fun getDataList(): Flowable<List<DomainModel>>
++    fun getDataList(options:Map<String, String>): Flowable<List<DomainModel>>
+ }
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\n    <string name=\"app_name\">MVI</string>\n    <string name=\"navigation_drawer_open\">Open navigation drawer</string>\n    <string name=\"navigation_drawer_close\">Close navigation drawer</string>\n    <string name=\"nav_header_title\">Android Studio</string>\n    <string name=\"nav_header_subtitle\">android.studio@android.com</string>\n    <string name=\"nav_header_desc\">Navigation header</string>\n    <string name=\"action_settings\">Settings</string>\n\n    <string name=\"menu_home\">Home</string>\n    <string name=\"menu_gallery\">Gallery</string>\n    <string name=\"menu_slideshow\">Slideshow</string>\n    <string name=\"menu_tools\">Tools</string>\n    <string name=\"menu_share\">Share</string>\n    <string name=\"menu_send\">Send</string>\n    <string name=\"title_activity_base\">BaseActivity</string>\n</resources>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/res/values/strings.xml	(date 1556736123000)
+@@ -14,4 +14,5 @@
+     <string name="menu_share">Share</string>
+     <string name="menu_send">Send</string>
+     <string name="title_activity_base">BaseActivity</string>
++    <string name="hint">hint</string>
+ </resources>
+Index: app/src/main/java/com/wisekiddo/repository/DataRemote.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository\n\nimport com.wisekiddo.models.RepositoryModel\nimport io.reactivex.Flowable\n\n/**\n * Interface defining methods for the caching of data. This is to be implemented by the\n * cache layer, using this interface as a way of communicating.\n */\ninterface DataRemote {\n\n    /**\n     * Retrieve a list of data, from the cache\n     */\n    fun getDataList(): Flowable<List<RepositoryModel>>\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/DataRemote.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/DataRemote.kt	(date 1556732810000)
+@@ -25,6 +25,6 @@
+     /**
+      * Retrieve a list of data, from the cache
+      */
+-    fun getDataList(): Flowable<List<RepositoryModel>>
++    fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>>
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/wisekiddo/repository/DataSource.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n * http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\npackage com.wisekiddo.repository\n\nimport com.wisekiddo.models.RepositoryModel\nimport io.reactivex.Completable\nimport io.reactivex.Flowable\nimport io.reactivex.Single\n\n/**\n * Interface defining methods for the data operations.\n * This is to be implemented by external data source layers, setting the requirements for the\n * operations that need to be implemented\n */\ninterface DataSource {\n    fun clearDataList(): Completable\n    fun saveDatList(repositoryList: List<RepositoryModel>): Completable\n    fun getDataList(): Flowable<List<RepositoryModel>>\n    fun isCached(): Single<Boolean>\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/wisekiddo/repository/DataSource.kt	(revision be2097104a69ff16e223db0fdaef1ce0ff3dfc99)
++++ app/src/main/java/com/wisekiddo/repository/DataSource.kt	(date 1556732859000)
+@@ -26,6 +26,6 @@
+ interface DataSource {
+     fun clearDataList(): Completable
+     fun saveDatList(repositoryList: List<RepositoryModel>): Completable
+-    fun getDataList(): Flowable<List<RepositoryModel>>
++    fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>>
+     fun isCached(): Single<Boolean>
+ }
+\ No newline at end of file
