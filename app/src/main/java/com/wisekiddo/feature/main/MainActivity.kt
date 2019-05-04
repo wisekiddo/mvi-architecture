@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.wisekiddo.R
 import com.wisekiddo.application.base.BaseView
 import com.wisekiddo.application.mapper.PresentationStreamMapper
+import com.wisekiddo.feature.base.BaseActivity
 import com.wisekiddo.models.DataViewModel
 import com.wisekiddo.presentation.MainDataViewModel
 import com.wisekiddo.presentation.MainIntent
@@ -34,10 +35,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener,
-    BaseView<MainIntent, MainUIModel> {
-
+class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
 
     companion object {
         init {
@@ -72,26 +70,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        navView.setNavigationItemSelectedListener(this)
+        renderView()
+        init()
 
         setupViews()
 
@@ -101,14 +81,6 @@ class MainActivity : AppCompatActivity(),
             .get(MainDataViewModel::class.java)
 
         mainDataViewModel.processIntents(intents())
-
-        val option= HashMap<String, String>()
-        option["gender"] = selectedQuery.gender?.toLowerCase()?:""
-        option["seed"] = selectedQuery.seed?.toLowerCase()?:""
-        //option["gender"] = "male"
-        compositeDisposable.add(mainDataViewModel.states(option).subscribe {
-            render(it)
-        })
 
         //-- prepare sample Encryption
 
@@ -231,17 +203,44 @@ class MainActivity : AppCompatActivity(),
                 // Navigation for slideshow
             }
             R.id.nav_tools -> {
-
+                // Navigation for slideshow
             }
             R.id.nav_share -> {
-
+                // Navigation for slideshow
             }
             R.id.nav_send -> {
-
+                // Navigation for slideshow
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun renderView() {
+        setContentView(R.layout.activity_main)
+    }
+
+    override fun init() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
+
     }
 }

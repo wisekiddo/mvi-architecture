@@ -107,3 +107,17 @@ r
 Bapp/src/main/java/com/wisekiddo/application/module/StoredModule.kt,a/7/a7dfb4441231300dfbff56721780ca0b0e82792d
 g
 7app/src/main/java/com/wisekiddo/models/DataViewModel.kt,4/d/4d01e75ea642b51269c705d621a88e0c7d9e2459
+i
+9app/src/main/java/com/wisekiddo/domain/FlowableUseCase.kt,a/6/a681a94ec31d5c0048009cd4b772ac2e6ff4b433
+e
+5app/src/main/java/com/wisekiddo/domain/GetDataList.kt,8/e/8e2d910b2cee7fed5bc3cd29c31a525636c9dd8f
+j
+:app/src/main/java/com/wisekiddo/presentation/MainAction.kt,6/f/6fcdbcbae2949d2b076ffb353811a4d4e4f0ff6e
+m
+=app/src/main/java/com/wisekiddo/presentation/MainProcessor.kt,3/7/37d98448866a9c4b9496b148895b240171686998
+q
+Aapp/src/main/java/com/wisekiddo/presentation/MainDataViewModel.kt,e/a/ea9df29468750a5a5a7afc917048d268122fce9c
+e
+5app/src/main/java/com/wisekiddo/models/RemoteModel.kt,0/2/025e2229a1a540238e9cd967df835ce2ad05925c
+l
+<app/src/main/java/com/wisekiddo/feature/main/MainActivity.kt,1/a/1a0070b9205c81606ac5fb18b74e910a8ea5e7dd

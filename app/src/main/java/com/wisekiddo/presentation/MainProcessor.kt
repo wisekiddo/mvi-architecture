@@ -20,6 +20,9 @@ import javax.inject.Inject
 
 class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
 
+    var actionProcessor: ObservableTransformer<MainAction, MainResult>
+    var options: Map<String, String> = HashMap()
+
     private val conversationsProcessor: ObservableTransformer<
             MainAction.LoadData, MainResult> = ObservableTransformer{
                 it.switchMap {
@@ -37,8 +40,7 @@ class MainProcessor @Inject constructor(private val getDataList: GetDataList) {
                 }
             }
 
-    var actionProcessor: ObservableTransformer<MainAction, MainResult>
-    var options: Map<String, String> = HashMap()
+
 
     init {
         this.actionProcessor = ObservableTransformer { item ->
