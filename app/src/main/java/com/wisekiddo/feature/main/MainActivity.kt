@@ -1,3 +1,16 @@
+/*
+ * Copyright 2019 Wisekiddo by Ronald Garcia Bernardo. All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.wisekiddo.feature.main
 
 import android.os.Bundle
@@ -10,7 +23,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -21,13 +33,14 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.wisekiddo.R
-import com.wisekiddo.application.base.BaseView
 import com.wisekiddo.application.mapper.PresentationStreamMapper
 import com.wisekiddo.feature.base.BaseActivity
 import com.wisekiddo.models.DataViewModel
 import com.wisekiddo.presentation.MainDataViewModel
 import com.wisekiddo.presentation.MainIntent
 import com.wisekiddo.presentation.MainUIModel
+import com.wisekiddo.utils.MapQuery
+import com.wisekiddo.utils.RSAEncrypt
 import com.wisekiddo.widgets.loaders.CurvesLoader
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
@@ -35,100 +48,123 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
-
-    companion object {
-        init {
-            System.loadLibrary("libso")
-        }
-    }
-    external fun encrypt(plain: String): CharArray
-    external fun decrypt(encrypted: String): CharArray
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
     lateinit var mapper: PresentationStreamMapper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var mainDataViewModel: MainDataViewModel
-    private lateinit var spGender:Spinner
-    private lateinit var tvUserId: TextInputEditText
-    private lateinit var tvMultiplier: TextInputEditText
-    private lateinit var btnQuery:Button
 
-    private lateinit var progressBar: CurvesLoader
-
+    private val spinnerArray = arrayOf("Male", "Female")
     private val selectedQuery = DataViewModel(gender = "Male")
 
-    private val loadConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.LoadDataIntent>()
-    private val refreshConversationsIntentPublisher =
-        BehaviorSubject.create<MainIntent.RefreshDataIntent>()
-
     private val compositeDisposable = CompositeDisposable()
+    private val loadConversationsIntentPublisher = BehaviorSubject.create<MainIntent.LoadDataIntent>()
+    private val refreshConversationsIntentPublisher = BehaviorSubject.create<MainIntent.RefreshDataIntent>()
 
+    private lateinit var toolbar: Toolbar
+    private lateinit var spinnerGender: Spinner
+    private lateinit var progressBar: CurvesLoader
+    private lateinit var textInputUserID: TextInputEditText
+    private lateinit var textInputMultiplier: TextInputEditText
+    private lateinit var buttonQuery: Button
+    private lateinit var fab: FloatingActionButton
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+    private lateinit var toggle : ActionBarDrawerToggle
+    private lateinit var spinnerArrayAdapter : ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        renderView()
-        init()
-
-        setupViews()
-
-        //-----
         AndroidInjection.inject(this)
+
         mainDataViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MainDataViewModel::class.java)
-
         mainDataViewModel.processIntents(intents())
 
+
         //-- prepare sample Encryption
-
         val strPlainText = "RSA Encrypt Text"
-        Log.i("RSA_Encrypt_Text",strPlainText)
-        val strEncryptedText = String(encrypt(strPlainText))
-        Log.i("Encrypted_Text","\t$strEncryptedText")
+        Log.i("RSA_Encrypt_Text", strPlainText)
+        val strEncryptedText = String(RSAEncrypt.encrypt(strPlainText))
+        Log.i("Encrypted_Text", "\t$strEncryptedText")
 
-        val strDecryptedText =String(decrypt(strEncryptedText))
-        Log.i("Decrypted_Text","\t$strDecryptedText")
+        val strDecryptedText = String(RSAEncrypt.decrypt(strEncryptedText))
+        Log.i("Decrypted_Text", "\t$strDecryptedText")
+    }
+
+    override fun renderView() {
+        setContentView(R.layout.activity_main)
+    }
+
+    override fun initialize() {
+        setupViews()
+        setupListeners()
     }
 
     private fun setupViews() {
-        val spinnerArray = arrayOf("Male", "Female")
-        val spinnerArrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray)
 
-        spGender = findViewById(R.id.sp_gender)
-        spGender.adapter = spinnerArrayAdapter
-        spGender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        toolbar = findViewById(R.id.toolbar)
+        spinnerGender = findViewById(R.id.sp_gender)
+        progressBar = findViewById(R.id.progress_bar)
+        textInputUserID = findViewById(R.id.te_userId)
+        textInputMultiplier = findViewById(R.id.te_multiplier)
+        buttonQuery = findViewById(R.id.btn_query)
+        fab = findViewById(R.id.fab)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+
+        toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        spinnerArrayAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            spinnerArray
+        )
+
+        spinnerGender.adapter = spinnerArrayAdapter
+        setSupportActionBar(toolbar)
+
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun setupListeners() {
+
+        buttonQuery.setOnClickListener {
+            selectedQuery.seed = textInputUserID.text.toString()
+            selectedQuery.multiplier = textInputMultiplier.text.toString()
+
+            MapQuery.setQueries("gender", selectedQuery.gender?.toLowerCase() ?: "")
+            MapQuery.setQueries("seed", selectedQuery.seed?.toLowerCase() ?: "")
+
+            compositeDisposable.add(mainDataViewModel.states(MapQuery.getQueries()).subscribe {
+                render(it)
+            })
+            refreshConversationsIntentPublisher.onNext(MainIntent.RefreshDataIntent)
+
+        }
+
+        spinnerGender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                selectedQuery.gender = "male"
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedQuery.gender = parent?.getItemAtPosition(position).toString()
             }
-
         }
 
-
-        tvUserId = findViewById(R.id.te_userId)
-        tvMultiplier = findViewById(R.id.te_multiplier)
-
-        btnQuery = findViewById(R.id.btn_query)
-        btnQuery.setOnClickListener {
-            selectedQuery.seed=tvUserId.text.toString()
-            selectedQuery.multiplier=tvUserId.text.toString()
-
-            val option= HashMap<String, String>()
-            option["gender"] = selectedQuery.gender?.toLowerCase()?:""
-            option["seed"] = selectedQuery.seed?.toLowerCase()?:""
-            //option["gender"] = "male"
-            compositeDisposable.add(mainDataViewModel.states(option).subscribe {
-                render(it)
-            })
+        fab.setOnClickListener {
+            showSnackbar("Hello World!")
         }
 
-        progressBar= findViewById(R.id.progress_bar)
     }
 
     override fun onDestroy() {
@@ -137,8 +173,10 @@ class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
     }
 
     override fun intents(): Observable<MainIntent> {
-        return Observable.merge(initialIntent(), loadConversationsIntentPublisher,
-            refreshConversationsIntentPublisher)
+        return Observable.merge(
+            initialIntent(), loadConversationsIntentPublisher,
+            refreshConversationsIntentPublisher
+        )
     }
 
     private fun initialIntent(): Observable<MainIntent.InitialIntent> {
@@ -153,14 +191,12 @@ class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
             state is MainUIModel.Failed -> {
                 compositeDisposable.clear()
                 progressBar.visibility = View.GONE
-                Snackbar.make(window.decorView.rootView, "An issue occur on retrieving the data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-
+                showSnackbar("An issue occur on retrieving the data")
             }
             state is MainUIModel.Success -> {
                 progressBar.visibility = View.GONE
 
-                Log.i("LIST",state.dataList.toString())
+                Log.i("LIST", state.dataList.toString())
             }
         }
     }
@@ -181,9 +217,6 @@ class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -217,30 +250,4 @@ class MainActivity : BaseActivity(), BaseView<MainIntent, MainUIModel> {
         return true
     }
 
-    override fun renderView() {
-        setContentView(R.layout.activity_main)
-    }
-
-    override fun init() {
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        navView.setNavigationItemSelectedListener(this)
-
-    }
 }

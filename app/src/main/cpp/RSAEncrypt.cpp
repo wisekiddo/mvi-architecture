@@ -130,7 +130,7 @@ unsigned char *base64_decode(const char *data,
 }
 
 JNIEXPORT jcharArray JNICALL
-Java_com_wisekiddo_feature_main_MainActivity_encrypt(
+Java_com_wisekiddo_utils_RSAEncrypt_encrypt(
         JNIEnv *env,
         jobject /* this */, jstring string) {
     unsigned char publicKey[] = "-----BEGIN PUBLIC KEY-----\n"\
@@ -154,7 +154,7 @@ Java_com_wisekiddo_feature_main_MainActivity_encrypt(
 }
 
 JNIEXPORT jcharArray JNICALL
-Java_com_wisekiddo_feature_main_MainActivity_decrypt(
+Java_com_wisekiddo_utils_RSAEncrypt_decrypt(
         JNIEnv *env,
         jobject /* this */, jstring string) {
     unsigned char privateKey[] = "-----BEGIN RSA PRIVATE KEY-----\n"\
