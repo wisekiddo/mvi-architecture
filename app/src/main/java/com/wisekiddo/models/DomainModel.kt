@@ -17,10 +17,16 @@ package com.wisekiddo.models
  * Representation for a [DomainModel] fetched from an external layer data source
  */
 data class DomainModel(
-    val seed: String,
-    val name: String,
+    val cell: String,
+    val dob: Dob,
+    val email: String,
     val gender: String,
-    val age: String,
-    val dob: String,
-    val email: String
+    val id: Id,
+    val location: Location,
+    val login: Login,
+    val name: Name,
+    val nat: String,
+    val phone: String,
+    val picture: Picture,
+    val registered: Registered
 )

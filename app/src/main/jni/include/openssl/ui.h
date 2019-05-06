@@ -62,20 +62,20 @@ void UI_free(UI *ui);
 
    All of the functions in this group take a UI and a prompt string.
    The string input and verify addition functions also take a flag argument,
-   a buffer for the result to end up with, a minimum input size and a maximum
-   input size (the result buffer MUST be large enough to be able to contain
+   a buffer for the results to end up with, a minimum input size and a maximum
+   input size (the results buffer MUST be large enough to be able to contain
    the maximum number of characters).  Additionally, the verify addition
-   functions takes another buffer to compare the result against.
+   functions takes another buffer to compare the results against.
    The boolean input functions take an action description string (which should
    be safe to ignore if the expected user action is obvious, for example with
    a dialog box with an OK button and a Cancel button), a string of acceptable
    characters to mean OK and to mean Cancel.  The two last strings are checked
    to make sure they don't have common characters.  Additionally, the same
-   flag argument as for the string input is taken, as well as a result buffer.
-   The result buffer is required to be at least one byte long.  Depending on
+   flag argument as for the string input is taken, as well as a results buffer.
+   The results buffer is required to be at least one byte long.  Depending on
    the answer, the first character from the OK or the Cancel character strings
-   will be stored in the first byte of the result buffer.  No NUL will be
-   added, so the result is *not* a string.
+   will be stored in the first byte of the results buffer.  No NUL will be
+   added, so the results is *not* a string.
 
    On success, the all return an index of the added information.  That index
    is useful when retrieving results with UI_get0_result(). */
@@ -160,7 +160,7 @@ void *UI_add_user_data(UI *ui, void *user_data);
 /* We need a user data retrieving function as well.  */
 void *UI_get0_user_data(UI *ui);
 
-/* Return the result associated with a prompt given with the index i. */
+/* Return the results associated with a prompt given with the index i. */
 const char *UI_get0_result(UI *ui, int i);
 
 /* When all strings have been added, process the whole thing. */
@@ -309,17 +309,17 @@ const char *UI_get0_output_string(UI_STRING *uis);
  * instruction)
  */
 const char *UI_get0_action_string(UI_STRING *uis);
-/* Return the result of a prompt */
+/* Return the results of a prompt */
 const char *UI_get0_result_string(UI_STRING *uis);
 /*
- * Return the string to test the result against.  Only useful with verifies.
+ * Return the string to test the results against.  Only useful with verifies.
  */
 const char *UI_get0_test_string(UI_STRING *uis);
-/* Return the required minimum size of the result */
+/* Return the required minimum size of the results */
 int UI_get_result_minsize(UI_STRING *uis);
-/* Return the required maximum size of the result */
+/* Return the required maximum size of the results */
 int UI_get_result_maxsize(UI_STRING *uis);
-/* Set the result of a UI_STRING. */
+/* Set the results of a UI_STRING. */
 int UI_set_result(UI *ui, UI_STRING *uis, const char *result);
 
 /* A couple of popular utility functions */

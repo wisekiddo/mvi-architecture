@@ -28,7 +28,7 @@ interface Service {
     fun getData(@QueryMap options:Map<String, String> ): Flowable<DataResponse>
 
     class DataResponse {
-        lateinit var result: List<RemoteModel>
+        lateinit var results: List<RemoteModel>
     }
 
 

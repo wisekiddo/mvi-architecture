@@ -17,7 +17,7 @@ package com.wisekiddo.stored.db
 object Constants {
     const val DATABASE = "wisekiddo_databased.db"
 
-    const val TABLE_NAME = "wisekiddo"
+    const val TABLE_NAME = "records"
 
     const val QUERY = "SELECT * FROM" + " " + TABLE_NAME
 

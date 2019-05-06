@@ -1876,7 +1876,7 @@ typedef int(*ssl_ct_validation_cb)(const CT_POLICY_EVAL_CTX *ctx,
 /*
  * Sets a |callback| that is invoked upon receipt of ServerHelloDone to validate
  * the received SCTs.
- * If the callback returns a non-positive result, the connection is terminated.
+ * If the callback returns a non-positive results, the connection is terminated.
  * Call this function before beginning a handshake.
  * If a NULL |callback| is provided, SCT validation is disabled.
  * |arg| is arbitrary userdata that will be passed to the callback whenever it

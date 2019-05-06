@@ -17,11 +17,16 @@ package com.wisekiddo.models
  * Representation for a [DataViewModel] fetched from an external layer data source
  */
 data class DataViewModel(
-    var seed: String? = "",
-    var name: String? = "",
-    var gender: String? = "",
-    var age: String? = "",
-    var dob: String? = "",
-    var email: String?="",
-    var multiplier:String?=""
+    val cell: String,
+    val dob: Dob,
+    val email: String,
+    val gender: String,
+    val id: Id,
+    val location: Location,
+    val login: Login,
+    val name: Name,
+    val nat: String,
+    val phone: String,
+    val picture: Picture,
+    val registered: Registered
 )

@@ -13,6 +13,7 @@
 
 package com.wisekiddo.models
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.wisekiddo.stored.db.Constants
@@ -21,10 +22,19 @@ import com.wisekiddo.stored.db.Constants
  * Model used solely for the caching of a data
  */
 @Entity(tableName = Constants.TABLE_NAME)
+
 data class StoredModel(
-    @PrimaryKey val seed: String, val name: String,
+    @PrimaryKey(autoGenerate = true) val seed: Int,
+    val cell: String,
+    @Embedded(prefix = "dob") val dob: Dob,
+    val email: String,
     val gender: String,
-    val age: String,
-    val dob: String,
-    val email: String
+    @Embedded(prefix = "id") val id: Id,
+    @Embedded(prefix = "location") val location: Location,
+    @Embedded(prefix = "login") val login: Login,
+    @Embedded(prefix = "name") val name: Name,
+    val nat: String,
+    val phone: String,
+    @Embedded(prefix = "picture") val picture: Picture,
+    @Embedded(prefix = "registered") val registered: Registered
 )

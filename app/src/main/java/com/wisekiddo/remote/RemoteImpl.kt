@@ -35,7 +35,7 @@ class RemoteImpl @Inject constructor(
     override fun getDataList(options:Map<String, String>): Flowable<List<RepositoryModel>> {
 
         return service.getData(options)
-            .map { it.result }
+            .map { it.results }
             .map { itemList ->
                 val entities = mutableListOf<RepositoryModel>()
                 itemList.forEach { entities.add(remoteRepositoryMapper.mapFromRemote(it)) }

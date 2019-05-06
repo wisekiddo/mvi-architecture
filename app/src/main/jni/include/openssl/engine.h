@@ -78,7 +78,7 @@ extern "C" {
  * via "ENGINE_by_id()". When an ENGINE must store state (eg. if
  * ENGINE_ctrl() commands are called in sequence as part of some stateful
  * process like key-generation setup and execution), it can set this flag -
- * then each attempt to obtain the ENGINE will result in it being copied into
+ * then each attempt to obtain the ENGINE will results in it being copied into
  * a new structure. Normally, ENGINEs don't declare this flag so
  * ENGINE_by_id() just increments the existing ENGINE's structural reference
  * count.
@@ -397,7 +397,7 @@ void ENGINE_register_all_pkey_asn1_meths(void);
 
 /*
  * These functions register all support from the above categories. Note, use
- * of these functions can result in static linkage of code your application
+ * of these functions can results in static linkage of code your application
  * may not need. If you only need a subset of functionality, consider using
  * more selective initialisation.
  */
@@ -449,7 +449,7 @@ int ENGINE_ctrl_cmd(ENGINE *e, const char *cmd_name,
  * ENGINE_ctrl() in application code. Any "return" data from an ENGINE_ctrl()
  * operation in this function will be lost - the return value is interpreted
  * as failure if the return value is zero, success otherwise, and this
- * function returns a boolean value as a result. In other words, vendors of
+ * function returns a boolean value as a results. In other words, vendors of
  * 'ENGINE'-enabled devices should write ENGINE implementations with
  * parameterisations that work in this scheme, so that compliant ENGINE-based
  * applications can work consistently with the same configuration for the
@@ -509,7 +509,7 @@ void *ENGINE_get_ex_data(const ENGINE *e, int idx);
 /*
  * These return values from within the ENGINE structure. These can be useful
  * with functional references as well as structural references - it depends
- * which you obtained. Using the result for functional purposes if you only
+ * which you obtained. Using the results for functional purposes if you only
  * obtained a structural reference may be problematic!
  */
 const char *ENGINE_get_id(const ENGINE *e);
@@ -607,7 +607,7 @@ ENGINE *ENGINE_get_pkey_asn1_meth_engine(int nid);
 
 /*
  * This sets a new default ENGINE structure for performing RSA operations. If
- * the result is non-zero (success) then the ENGINE structure will have had
+ * the results is non-zero (success) then the ENGINE structure will have had
  * its reference count up'd so the caller should still free their own
  * reference 'e'.
  */
@@ -626,7 +626,7 @@ int ENGINE_set_default_pkey_asn1_meths(ENGINE *e);
 /*
  * The combination "set" - the flags are bitwise "OR"d from the
  * ENGINE_METHOD_*** defines above. As with the "ENGINE_register_complete()"
- * function, this function can result in unnecessary static linkage. If your
+ * function, this function can results in unnecessary static linkage. If your
  * application requires only specific functionality, consider using more
  * selective functions.
  */
